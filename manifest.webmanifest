@@ -1,0 +1,15 @@
+{
+  "name": "Impuestos Adorno",
+  "short_name": "Impuestos",
+  "description": "Impuestos informados por el estudio, repartidos por unidad — Claudia Adorno SRL",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#7c2d12",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon-192-v2.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512-v2.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

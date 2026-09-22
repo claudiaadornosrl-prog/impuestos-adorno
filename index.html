@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<script>
+// ═══ SESIÓN COMPARTIDA ENTRE MÓDULOS · SSO Adorno (10-sep-2026) ═══
+// Todos los módulos viven en el mismo origen (claudiaadornosrl-prog.github.io),
+// así que pueden compartir la sesión: se guarda bajo la clave 'adorno-auth' en
+// vez de una por módulo. Que un módulo te deje pasar SIN escribir la clave
+// depende de dos marcas, y alcanza con una:
+//   · dispositivo confiable → se tilda UNA vez en el Hub ("Confiar en esta
+//     computadora"). Vale para todos los módulos de ese equipo. Pensado para
+//     la PC de JP; en los locales, que son compartidos, nadie la tilda.
+//   · módulo recordado → ya te habías logueado en ESE módulo con ese mismo
+//     usuario. Conserva el comportamiento de siempre para las vendedoras.
+// Sin ninguna de las dos, el módulo pide usuario y contraseña como antes.
+window.ADORNO_SSO = (function () {
+  var KEY = 'adorno-auth', DEV = 'adorno-equipo-confiable', MOD = 'adorno-modulo-';
+  function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  return {
+    KEY: KEY,
+    // Al estrenar la clave compartida, adopta la sesión que este módulo ya
+    // tenía guardada con su clave vieja: nadie se queda afuera por el cambio.
+    migrar: function (keyVieja, modulo) {
+      if (!keyVieja) return;
+      var v = get(keyVieja);
+      if (!v) return;
+      // La sesión se copia una sola vez; la marca del módulo se pone siempre
+      // que este módulo tuviera sesión propia — Documentos y Compras
+      // compartían la clave por defecto y si no, al segundo le pediría login.
+      if (!get(KEY)) set(KEY, v);
+      var mail = '1';
+      try { mail = (JSON.parse(v).user || {}).email || '1'; } catch (e) {}
+      set(MOD + modulo, String(mail).toLowerCase());
+    },
+    confiable: function () { return get(DEV) === '1'; },
+    confiar: function (si) { si ? set(DEV, '1') : del(DEV); },
+    recordar: function (modulo, email) { set(MOD + modulo, String(email || '1').toLowerCase()); },
+    entraDirecto: function (modulo, email) {
+      if (this.confiable()) return true;
+      var m = get(MOD + modulo);
+      return !!m && (m === '1' || m === String(email || '').toLowerCase());
+    },
+    // Al cerrar sesión se olvidan los módulos, pero NO que el equipo es de
+    // confianza: eso es una propiedad de la computadora, no de la sesión.
+    olvidarModulos: function () {
+      try {
+        Object.keys(localStorage).filter(function (k) { return k.indexOf(MOD) === 0; }).forEach(del);
+      } catch (e) {}
+    }
+  };
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#7c2d12">
+<title>🏛 Impuestos · Claudia Adorno</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192-v2.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🏛%3C/text%3E%3C/svg%3E">
+
+<style>
+@font-face { font-family: 'URW Gothic'; src: url('fonts/URWGothic-Book.ttf') format('truetype'); font-weight: 300 700; font-display: swap; }
+:root { --primary: #7c2d12; --primary-dark: #5a2110; --primary-bg: #fff7ed; --green:#16a34a; --green-bg:#dcfce7; --amber:#d97706; --amber-bg:#fef3c7;
+        --red:#dc2626; --red-bg:#fee2e2; --gray:#64748b; --gray-light:#f1f5f9; --border:#e2e8f0; --text:#0f172a; --muted:#64748b; }
+* { box-sizing: border-box; }
+body { font-family: 'URW Gothic', -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; background: #f8fafc; color: var(--text); }
+#login { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); }
+.login-card { background: white; border-radius: 16px; padding: 32px 28px; max-width: 400px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.login-card h1 { margin: 0 0 4px; font-size: 24px; color: var(--primary); text-align: center; }
+.login-card .sub { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+.login-card label { font-size: 12px; font-weight: 600; color: var(--muted); display: block; margin: 12px 0 6px; text-transform: uppercase; letter-spacing: .04em; }
+.login-card input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; }
+.login-card button { width: 100%; margin-top: 18px; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.login-card button:disabled { opacity: .5; }
+#login-error { color: var(--red); font-size: 13px; margin-top: 12px; min-height: 18px; }
+#app { display: none; }
+header { background: white; border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 100; }
+header h1 { margin: 0; font-size: 18px; color: var(--primary); }
+header .spacer { flex: 1; } header .user-info { font-size: 13px; color: var(--muted); }
+header button.logout, .btn { background: white; border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; font-size: 13px; cursor: pointer; font-family: inherit; }
+.btn.primary { background: var(--primary); color: white; border-color: var(--primary); }
+.btn.danger { color: var(--red); border-color: var(--red); }
+nav.tabs { display: flex; gap: 4px; padding: 8px 20px; background: white; border-bottom: 1px solid var(--border); overflow-x: auto; }
+nav.tabs button { background: transparent; border: none; padding: 10px 16px; font-size: 14px; cursor: pointer; color: var(--muted); border-radius: 8px 8px 0 0; white-space: nowrap; font-family: inherit; }
+nav.tabs button.active { background: var(--primary-bg); color: var(--primary); font-weight: 600; }
+main { padding: 20px; max-width: 1400px; margin: 0 auto; }
+.filters { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.filters label { font-size: 12px; color: var(--muted); font-weight: 600; }
+.filters select, .filters input, .form select, .form input, .form textarea { border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: 14px; background: white; font-family: inherit; }
+.filters .stat { margin-left: auto; font-size: 13px; color: var(--muted); }
+.tab-content { display: none; } .tab-content.active { display: block; }
+table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+th, td { padding: 9px 12px; text-align: left; font-size: 14px; border-bottom: 1px solid var(--border); }
+th { background: var(--gray-light); font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr.nivel1 td { background: var(--primary-bg); font-weight: 700; } tr.nivel2 td { background: #f8fafc; font-weight: 600; }
+tr.dim { color: var(--muted); }
+.chip { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.chip.green { background: var(--green-bg); color: var(--green); } .chip.amber { background: var(--amber-bg); color: var(--amber); }
+.chip.red { background: var(--red-bg); color: var(--red); } .chip.gray { background: var(--gray-light); color: var(--muted); }
+.empty { padding: 50px 20px; text-align: center; color: var(--muted); background: white; border-radius: 10px; }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--text); color: white; padding: 12px 20px; border-radius: 8px; font-size: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.2); z-index: 1000; }
+.toast.error { background: var(--red); } .toast.success { background: var(--green); }
+.card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; }
+.card h3 { margin: 0 0 8px; font-size: 15px; }
+.form { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; align-items: end; }
+.form label { font-size: 12px; color: var(--muted); font-weight: 600; display: flex; flex-direction: column; gap: 4px; }
+.mini { font-size: 12px; color: var(--muted); }
+.prueba { background: #fef3c7; color: #92400e; text-align: center; padding: 4px; font-size: 12px; font-weight: 600; }
+#ov { position: fixed; inset: 0; background: rgba(15,23,42,.45); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 16px; }
+#ov .box { background: white; border-radius: 12px; padding: 18px; max-width: 720px; width: 100%; max-height: 90vh; overflow: auto; }
+@media (max-width: 600px) { main { padding: 10px; } th, td { padding: 8px 8px; font-size: 13px; } header h1 { font-size: 16px; } }
+</style>
+</head>
+<body>
+<div id="login">
+  <div class="login-card">
+    <h1>🏛 Impuestos</h1>
+    <div class="sub">Lo que informa el estudio, repartido por unidad<br>Claudia Adorno SRL</div>
+    <label>Email</label>
+    <input type="email" id="email" placeholder="tu_email@ejemplo.com" autocomplete="username">
+    <label>Contraseña</label>
+    <input type="password" id="pass" placeholder="••••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter') doLogin()">
+    <button onclick="doLogin()" id="btn-login">Entrar</button>
+    <div id="login-error"></div>
+  </div>
+</div>
+<div id="app">
+  <div id="franja-prueba" class="prueba" style="display:none">🧪 MODO PRUEBA · solo se ven los comprobantes de test</div>
+  <header>
+    <a href="https://claudiaadornosrl-prog.github.io/hub/" title="Volver al Hub" style="text-decoration:none;font-size:17px;line-height:1;color:inherit;opacity:.65;padding:4px 8px;border-radius:8px;">↩</a>
+    <h1>🏛 Impuestos · Claudia Adorno</h1>
+    <div class="spacer"></div>
+    <div class="user-info" id="user-info"></div>
+    <button class="logout" onclick="doLogout()">Salir</button>
+  </header>
+  <nav class="tabs" id="tabs">
+    <button id="tab-mensual" class="active" onclick="switchTab('mensual')">📅 Mensual</button>
+    <button id="tab-catalogo" class="" onclick="switchTab('catalogo')">📇 Impuestos</button>
+    <button id="tab-vencimientos" class="" onclick="switchTab('vencimientos')">🧾 Vencimientos</button>
+  </nav>
+  <main>
+
+    <section id="content-mensual" class="tab-content active">
+      <div class="filters">
+        <label>Mes</label><select id="m-mes" onchange="renderMensual()"></select>
+        <label>Año</label><select id="m-anio" onchange="renderMensual()"></select>
+        <div class="stat" id="m-stat"></div>
+      </div>
+      <div class="card">
+        <h3>Importes del mes <span class="mini">(lo que informa el estudio; el módulo los reparte por unidad)</span></h3>
+        <div id="m-carga"></div>
+      </div>
+      <div class="card">
+        <h3>Cómo queda repartido</h3>
+        <div id="m-dist"></div>
+      </div>
+    </section>
+    <section id="content-catalogo" class="tab-content">
+      <div class="card">
+        <h3>Impuestos y su regla de reparto</h3>
+        <div class="mini" style="margin-bottom:8px">Solo el admin edita. La regla dice a qué unidad va cada peso: por venta de cada local, % del sueldo banco, todo a una unidad, o cargado a mano por unidad.</div>
+        <div id="c-lista"></div>
+        <div id="c-form" style="display:none;margin-top:12px"></div>
+        <button class="btn" id="c-nuevo" onclick="nuevoImpuesto()" style="margin-top:10px">➕ Nuevo impuesto</button>
+      </div>
+    </section>
+    <section id="content-vencimientos" class="tab-content">
+      <div class="card">
+        <h3>Vencimientos y pagos</h3>
+        <div class="mini">Preparado para los VEPs que prepara el estudio: cada importe mensual puede llevar vencimiento, fecha de pago y comprobante. Por ahora se carga a mano desde 📅 Mensual; la subida del VEP viene después.</div>
+        <div id="v-lista" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL  = 'https://kwwiykssrpabncpqtmwi.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3d2l5a3NzcnBhYm5jcHF0bXdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNjI1NTQsImV4cCI6MjA5NDkzODU1NH0.O1VhKdjPahnJJ9qXcQuSKQbnKGhsEZqYmjDEfRuRpkc';
+const MODULO = 'impuestos';
+ADORNO_SSO.migrar('sb-kwwiykssrpabncpqtmwi-auth-token', MODULO);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth: { persistSession: true, autoRefreshToken: true, storageKey: ADORNO_SSO.KEY } });
+(function (mod) {
+  var inOrig = sb.auth.signInWithPassword.bind(sb.auth);
+  sb.auth.signInWithPassword = async function (cred) { var r = await inOrig(cred); if (!r.error && r.data && r.data.user) ADORNO_SSO.recordar(mod, r.data.user.email); return r; };
+  var outOrig = sb.auth.signOut.bind(sb.auth);
+  sb.auth.signOut = async function () { ADORNO_SSO.olvidarModulos(); return outOrig.apply(null, arguments); };
+})(MODULO);
+
+// 🧪 AMBIENTE DE PRUEBA: mismo interruptor que Compras (constante). true = solo comprobantes de test.
+// Cuando Compras pase a definitivo, pasar acá también a false.
+const MODO_PRUEBA = true;
+let session = null;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const plata = n => (n == null || isNaN(n)) ? '—' : '$ ' + Number(n).toLocaleString('es-AR', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+const plata2 = n => (n == null || isNaN(n)) ? '—' : '$ ' + Number(n).toLocaleString('es-AR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+function hoyAR() { const p = new Intl.DateTimeFormat('en-CA', {timeZone: 'America/Argentina/Buenos_Aires', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date()); return p; }
+function toast(msg, tipo) { const t = document.createElement('div'); t.className = 'toast ' + (tipo || ''); t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3200); }
+function switchTab(k) {
+  document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('active', b.id === 'tab-' + k));
+  document.querySelectorAll('.tab-content').forEach(s => s.classList.toggle('active', s.id === 'content-' + k));
+  if (typeof onTab === 'function') onTab(k);
+}
+async function doLogin() {
+  const email = document.getElementById('email').value.trim().toLowerCase();
+  const pass  = document.getElementById('pass').value;
+  const errEl = document.getElementById('login-error'); errEl.textContent = '';
+  if (!email || !pass) { errEl.textContent = 'Email y contraseña obligatorios'; return; }
+  document.getElementById('btn-login').disabled = true;
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (error) throw error;
+    await entrar(data.user);
+  } catch (e) { errEl.textContent = 'Error: ' + (e.message || 'desconocido'); }
+  finally { document.getElementById('btn-login').disabled = false; }
+}
+async function entrar(user) {
+  const { data: ok } = await sb.rpc('impuestos_es_usuario');
+  if (!ok) { await sb.auth.signOut(); document.getElementById('login-error').textContent = 'Tu usuario no tiene acceso a este módulo.'; return; }
+  session = { email: user.email, user };
+  document.getElementById('user-info').textContent = user.email;
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('franja-prueba').style.display = MODO_PRUEBA ? 'block' : 'none';
+  await init();
+}
+async function doLogout() { await sb.auth.signOut(); location.reload(); }
+(async () => {
+  const { data: { session: s } } = await sb.auth.getSession();
+  if (s && ADORNO_SSO.entraDirecto(MODULO, s.user?.email)) await entrar(s.user);
+})();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+
+
+let CAT = [], UNIDADES = [], esAdmin = false;
+async function init(){
+  const [c, u, a] = await Promise.all([
+    sb.from('impuestos_catalogo').select('*').order('orden'),
+    sb.from('gastos_unidades').select('*').eq('activo', true).order('orden'),
+    sb.rpc('rrhh_is_admin')]);
+  CAT = c.data || []; UNIDADES = u.data || []; esAdmin = !!a.data;
+  const hoy = hoyAR(); const sm = document.getElementById('m-mes'), sa = document.getElementById('m-anio');
+  sm.innerHTML = MESES.map((m,i) => `<option value="${i+1}">${m}</option>`).join('');
+  const y = Number(hoy.slice(0,4)); sa.innerHTML = [y-1, y, y+1].map(v => `<option value="${v}">${v}</option>`).join('');
+  sm.value = Number(hoy.slice(5,7)); sa.value = y;
+  document.getElementById('c-nuevo').style.display = esAdmin ? '' : 'none';
+  await renderMensual(); renderCatalogo(); await renderVencimientos();
+}
+function onTab(k){ if (k === 'vencimientos') renderVencimientos(); }
+const periodoSel = () => `${document.getElementById('m-anio').value}-${String(document.getElementById('m-mes').value).padStart(2,'0')}-01`;
+const uniNombre = k => (UNIDADES.find(u => u.clave === k) || {}).nombre || k || '—';
+
+async function renderMensual(){
+  const per = periodoSel();
+  const { data: rows } = await sb.from('impuestos_mensual').select('*').eq('periodo', per).eq('es_prueba', MODO_PRUEBA);
+  const R = rows || [];
+  let html = '<table><tr><th>Impuesto</th><th>Regla</th><th class="num">Importe del mes</th><th>Vencimiento</th><th>Pagado</th><th></th></tr>';
+  for (const c of CAT.filter(x => x.activo)){
+    if (c.prorrateo === 'manual'){
+      for (const u of UNIDADES){
+        const r = R.find(x => x.impuesto === c.clave && x.unidad === u.clave) || {};
+        html += fila(c, r, u);
+      }
+    } else {
+      const r = R.find(x => x.impuesto === c.clave && !x.unidad) || {};
+      html += fila(c, r, null);
+    }
+  }
+  document.getElementById('m-carga').innerHTML = html + '</table>';
+  const { data: dist, error } = await sb.rpc('impuestos_distribuir', { p_periodo: per, p_prueba: MODO_PRUEBA });
+  if (error){ document.getElementById('m-dist').innerHTML = `<div class="empty">${esc(error.message)}</div>`; return; }
+  const D = dist || [];
+  if (!D.length){ document.getElementById('m-dist').innerHTML = '<div class="empty">Sin importes cargados para este mes.</div>'; document.getElementById('m-stat').textContent = ''; return; }
+  let h = '<table><tr><th>Impuesto</th><th>Categoría en la planilla</th><th>Unidad</th><th class="num">Importe</th><th>Cálculo</th></tr>';
+  let tot = 0;
+  for (const d of D){ tot += Number(d.importe); h += `<tr><td>${esc(d.nombre)}</td><td><span class="chip gray">${esc(d.categoria)}</span></td><td>${esc(uniNombre(d.unidad))}</td><td class="num">${plata(d.importe)}</td><td class="mini">${esc(d.calculo)}</td></tr>`; }
+  document.getElementById('m-dist').innerHTML = h + '</table>';
+  document.getElementById('m-stat').innerHTML = `Total repartido: <strong>${plata(tot)}</strong>`;
+}
+function fila(c, r, u){
+  const key = `${c.clave}|${u ? u.clave : ''}`;
+  const regla = {ventas:'por venta de cada local', sueldo_banco:`${c.porcentaje ?? '?'} % del sueldo banco`, unidad_fija:'todo a ' + uniNombre(c.unidad_fija), manual:'a mano por unidad'}[c.prorrateo];
+  return `<tr>
+    <td>${esc(c.nombre)}${u ? ` <span class="chip gray">${esc(u.nombre)}</span>` : ''}</td>
+    <td class="mini">${esc(regla)}</td>
+    <td class="num"><input type="number" step="0.01" id="imp-${key}" value="${r.importe ?? ''}" style="width:150px;text-align:right" placeholder="0"></td>
+    <td><input type="date" id="vto-${key}" value="${r.vencimiento || ''}"></td>
+    <td><input type="date" id="pag-${key}" value="${r.pagado_at || ''}"></td>
+    <td><button class="btn primary" onclick="guardarImp('${c.clave}', '${u ? u.clave : ''}', ${r.id || 'null'})">Guardar</button></td>
+  </tr>`;
+}
+async function guardarImp(imp, uni, id){
+  const key = `${imp}|${uni}`;
+  const importe = Number(document.getElementById('imp-' + key).value || 0);
+  const vto = document.getElementById('vto-' + key).value || null;
+  const pag = document.getElementById('pag-' + key).value || null;
+  const row = { impuesto: imp, periodo: periodoSel(), importe, unidad: uni || null, vencimiento: vto, pagado_at: pag, es_prueba: MODO_PRUEBA, cargado_por: session.email };
+  const q = id ? sb.from('impuestos_mensual').update(row).eq('id', id) : sb.from('impuestos_mensual').insert(row);
+  const { error } = await q;
+  if (error){ toast('No se pudo guardar: ' + error.message, 'error'); return; }
+  toast('Guardado', 'success'); await renderMensual();
+}
+
+// ── Catálogo ──
+function renderCatalogo(){
+  let h = '<table><tr><th>Clave</th><th>Nombre</th><th>Categoría planilla</th><th>Reparto</th><th>Activo</th><th></th></tr>';
+  for (const c of CAT){
+    h += `<tr class="${c.activo ? '' : 'dim'}"><td><code>${esc(c.clave)}</code></td><td>${esc(c.nombre)}</td><td>${esc(c.categoria_gastos)}</td>
+      <td class="mini">${esc(c.prorrateo)}${c.porcentaje != null ? ' · ' + c.porcentaje + ' %' : ''}${c.unidad_fija ? ' · ' + uniNombre(c.unidad_fija) : ''}${c.unidades_incluidas ? ' · ' + c.unidades_incluidas.join(', ') : ''}</td>
+      <td>${c.activo ? '✓' : '—'}</td><td>${esadmin() ? `<button class="btn" onclick="editarImpuesto('${c.clave}')">✏️</button>` : ''}</td></tr>`;
+  }
+  document.getElementById('c-lista').innerHTML = h + '</table>';
+}
+const esadmin = () => esAdmin;
+function nuevoImpuesto(){ formImpuesto({}); }
+function editarImpuesto(k){ formImpuesto(CAT.find(c => c.clave === k) || {}); }
+function formImpuesto(c){
+  const f = document.getElementById('c-form'); f.style.display = 'block';
+  const cats = ['sueldos','alquiler','expensas','servicios','tarjetas','iibb','varios'];
+  f.innerHTML = `<div class="form">
+    <label>Clave <input id="f-clave" value="${esc(c.clave || '')}" ${c.clave ? 'readonly' : ''} placeholder="iibb"></label>
+    <label>Nombre <input id="f-nombre" value="${esc(c.nombre || '')}"></label>
+    <label>Categoría en la planilla <select id="f-cat">${cats.map(x => `<option ${c.categoria_gastos === x ? 'selected' : ''}>${x}</option>`).join('')}</select></label>
+    <label>Reparto <select id="f-pro" onchange="document.getElementById('f-pct').disabled = this.value !== 'sueldo_banco'; document.getElementById('f-uf').disabled = this.value !== 'unidad_fija'">
+      ${['ventas','sueldo_banco','unidad_fija','manual'].map(x => `<option ${c.prorrateo === x ? 'selected' : ''}>${x}</option>`).join('')}</select></label>
+    <label>% (sueldo banco) <input id="f-pct" type="number" step="0.01" value="${c.porcentaje ?? ''}" ${c.prorrateo === 'sueldo_banco' ? '' : 'disabled'}></label>
+    <label>Unidad fija <select id="f-uf" ${c.prorrateo === 'unidad_fija' ? '' : 'disabled'}><option value="">—</option>${UNIDADES.map(u => `<option value="${u.clave}" ${c.unidad_fija === u.clave ? 'selected' : ''}>${esc(u.nombre)}</option>`).join('')}</select></label>
+    <label>Solo estas unidades <input id="f-inc" value="${(c.unidades_incluidas || []).join(', ')}" placeholder="vacío = todas · ej: alcorta, unicenter"></label>
+    <label>Orden <input id="f-orden" type="number" value="${c.orden ?? 99}"></label>
+    <label><span>Activo</span><input id="f-activo" type="checkbox" ${c.activo !== false ? 'checked' : ''}></label>
+    <label style="grid-column:1/-1">Notas <input id="f-notas" value="${esc(c.notas || '')}"></label>
+  </div>
+  <div style="margin-top:8px;display:flex;gap:8px"><button class="btn primary" onclick="guardarImpuesto()">Guardar</button><button class="btn" onclick="document.getElementById('c-form').style.display='none'">Cancelar</button></div>`;
+}
+async function guardarImpuesto(){
+  const g = id => document.getElementById(id);
+  const inc = g('f-inc').value.split(',').map(s => s.trim()).filter(Boolean);
+  const row = { clave: g('f-clave').value.trim().toLowerCase(), nombre: g('f-nombre').value.trim(), categoria_gastos: g('f-cat').value, prorrateo: g('f-pro').value,
+    porcentaje: g('f-pct').value === '' ? null : Number(g('f-pct').value), unidad_fija: g('f-uf').value || null, unidades_incluidas: inc.length ? inc : null,
+    orden: Number(g('f-orden').value || 99), activo: g('f-activo').checked, notas: g('f-notas').value || null };
+  if (!row.clave || !row.nombre){ toast('Clave y nombre son obligatorios', 'error'); return; }
+  const { error } = await sb.from('impuestos_catalogo').upsert(row, { onConflict: 'clave' });
+  if (error){ toast('No se pudo guardar: ' + error.message, 'error'); return; }
+  toast('Guardado', 'success'); document.getElementById('c-form').style.display = 'none';
+  const { data } = await sb.from('impuestos_catalogo').select('*').order('orden'); CAT = data || []; renderCatalogo(); await renderMensual();
+}
+
+// ── Vencimientos ──
+async function renderVencimientos(){
+  const { data } = await sb.from('impuestos_mensual').select('*').eq('es_prueba', MODO_PRUEBA).not('vencimiento', 'is', null).order('vencimiento', { ascending: false }).limit(200);
+  const R = data || [];
+  if (!R.length){ document.getElementById('v-lista').innerHTML = '<div class="empty">Todavía no hay vencimientos cargados.</div>'; return; }
+  const hoy = hoyAR();
+  let h = '<table><tr><th>Impuesto</th><th>Período</th><th class="num">Importe</th><th>Vence</th><th>Estado</th></tr>';
+  for (const r of R){
+    const c = CAT.find(x => x.clave === r.impuesto) || {};
+    const est = r.pagado_at ? `<span class="chip green">Pagado ${r.pagado_at}</span>` : (r.vencimiento < hoy ? '<span class="chip red">Vencido</span>' : '<span class="chip amber">Pendiente</span>');
+    h += `<tr><td>${esc(c.nombre || r.impuesto)}${r.unidad ? ' · ' + esc(uniNombre(r.unidad)) : ''}</td><td>${MESES[Number(r.periodo.slice(5,7))-1]} ${r.periodo.slice(0,4)}</td><td class="num">${plata(r.importe)}</td><td>${r.vencimiento}</td><td>${est}</td></tr>`;
+  }
+  document.getElementById('v-lista').innerHTML = h + '</table>';
+}
+
+</script>
+<script src="manual.js?v=1"></script>
+</body>
+</html>
