@@ -24,7 +24,7 @@ function _manualSecciones() {
       pasos: [
         'Elegí mes y año. Por cada impuesto hay un renglón: importe del mes, vencimiento y fecha de pago (opcionales). Guardar es por renglón.',
         'Ingresos Brutos se reparte por la venta de cada local del mes (misma fórmula que tenía la planilla: importe × venta del local / total ventas).',
-        'Cargas sociales NO se cargan: salen solas como el 55 % del sueldo banco de cada unidad (RRHH). Si el estudio informa otro %, se cambia en 📇 Impuestos.',
+        'Cargas sociales NO se cargan: salen solas como el 55 % del sueldo banco de cada unidad (Colaboradores). Si el estudio informa otro %, se cambia en 📇 Impuestos.',
         'Impuesto al débito y al crédito van enteros a Administración.',
         'Abajo, "Cómo queda repartido" muestra el resultado unidad por unidad con el cálculo al lado. Es exactamente lo que va a ver la planilla de Gastos.',
         'En modo 🧪 prueba (franja amarilla) los importes se guardan aparte y no mezclan con los reales.',
