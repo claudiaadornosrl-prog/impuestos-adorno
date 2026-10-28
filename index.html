@@ -498,97 +498,13 @@ tr.dim { color: var(--muted); }
 #ov .box { background: white; border-radius: 12px; padding: 18px; max-width: 720px; width: 100%; max-height: 90vh; overflow: auto; }
 @media (max-width: 600px) { main { padding: 10px; } th, td { padding: 8px 8px; font-size: 13px; } header h1 { font-size: 16px; } }
 .hbtn:hover{background:rgba(255,255,255,.18);opacity:1}
-/* ── Impuestos fase 1 (28-oct-2026): cabecera con íconos (regla de diseño JP 21-oct) ── */
-.ico { width: 20px; height: 20px; flex: none; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-header { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.15); padding: 10px 16px; gap: 10px; border-bottom: none; }
-header h1 { color: #fff; font-size: 17px; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
-header .user-info { display: none; }
-.hbtn { display: flex; align-items: center; height: 34px; padding: 0 7px; border: none; border-radius: 9px; background: transparent; color: #fff; opacity: .85; cursor: pointer; font-family: inherit; font-size: 13px; white-space: nowrap; text-decoration: none; transition: background .15s, opacity .15s; }
-.hbtn .lb { max-width: 0; overflow: hidden; opacity: 0; margin-left: 0; transition: max-width .25s ease, opacity .18s, margin-left .25s; }
-.hbtn:hover .lb { max-width: 160px; opacity: 1; margin-left: 6px; }
-.hsep { width: 1px; height: 22px; background: rgba(255,255,255,.35); margin: 0 6px; flex: none; }
-.header-right { display: flex; gap: 2px; align-items: center; flex: none; position: relative; }
-nav.tabs { display: flex; gap: 2px; overflow-x: auto; flex: 1; margin: 0 10px; justify-content: flex-end; align-items: center; scrollbar-width: none; background: transparent; border: none; padding: 0; }
-nav.tabs::-webkit-scrollbar { display: none; }
-nav.tabs button { display: flex; align-items: center; height: 34px; padding: 0 7px; border: none; border-radius: 9px; background: transparent; color: #fff; opacity: .85; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 600; white-space: nowrap; transition: background .15s, opacity .15s; }
-nav.tabs button .lb { max-width: 0; overflow: hidden; opacity: 0; margin-left: 0; transition: max-width .25s ease, opacity .18s, margin-left .25s; }
-nav.tabs button:hover .lb, nav.tabs button.active .lb { max-width: 170px; opacity: 1; margin-left: 6px; }
-nav.tabs button:hover { background: rgba(255,255,255,.18); opacity: 1; }
-nav.tabs button.active { background: #fff; color: var(--primary-dark); opacity: 1; font-weight: 700; }
-.kebab-tabs-btn { display: none; }
-@media (max-width: 900px) {
-  .kebab-tabs-btn { display: flex; }
-  nav.tabs { display: none; position: absolute; top: calc(100% + 4px); right: 8px; left: auto; background: white; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.14); flex-direction: column; padding: 6px; z-index: 200; margin: 0; min-width: 210px; overflow: visible; }
-  nav.tabs.open { display: flex; }
-  nav.tabs button { justify-content: flex-start; color: var(--text); opacity: 1; border-left: 3px solid transparent; border-radius: 6px; height: auto; padding: 10px 12px; }
-  nav.tabs button .lb { max-width: none; opacity: 1; margin-left: 8px; }
-  nav.tabs button:hover { background: #fafafa; }
-  nav.tabs button.active { border-left-color: var(--primary); background: var(--primary-bg); color: var(--primary-dark); }
-}
-/* botones de acción: solo ícono, sin recuadro, tooltip en title */
-.ib { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: none; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; padding: 0; vertical-align: middle; transition: background .15s, color .15s; }
-.ib:hover { background: var(--gray-light); color: var(--text); }
-.ib svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.ib.main { color: var(--primary); width: 40px; height: 40px; } .ib.main svg { width: 26px; height: 26px; }
-.ib.main:hover { background: var(--primary-bg); color: var(--primary-dark); }
-.ib.ok { color: var(--green); } .ib.warn { color: var(--red); }
-.ib:disabled { opacity: .35; cursor: default; }
-/* KPIs */
-.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 14px; }
-.kpi { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
-.kpi .k-t { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
-.kpi .k-v { font-size: 22px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums; }
-.kpi .k-s { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.kpi.venc .k-v { color: var(--red); } .kpi.pag .k-v { color: var(--green); } .kpi.apag .k-v { color: var(--amber); }
-/* grilla del tablero */
-.grilla-wrap { overflow-x: auto; background: white; border-radius: 10px; border: 1px solid var(--border); }
-table.grilla { box-shadow: none; border-radius: 0; min-width: 980px; }
-table.grilla th, table.grilla td { padding: 6px 5px; border-bottom: 1px solid var(--border); vertical-align: top; }
-table.grilla th { text-align: center; }
-table.grilla td.imp { min-width: 170px; position: sticky; left: 0; background: white; z-index: 1; font-size: 13px; }
-table.grilla th.imp { position: sticky; left: 0; z-index: 2; text-align: left; }
-table.grilla td.cel { text-align: center; min-width: 62px; }
-table.grilla td.tot, table.grilla th.tot { text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; white-space: nowrap; }
-table.grilla tr.pie td { background: var(--gray-light); font-weight: 700; font-size: 12px; text-align: center; }
-table.grilla th.otro, table.grilla td.otro { background: #fafafa; }
-.ob { display: block; width: 100%; margin: 2px 0; border: 1px solid transparent; border-radius: 7px; padding: 3px 4px; font-size: 11.5px; line-height: 1.25; cursor: pointer; font-family: inherit; font-weight: 600; font-variant-numeric: tabular-nums; }
-.ob small { display: block; font-weight: 500; font-size: 10.5px; opacity: .85; }
-.ob.ok { background: var(--green-bg); color: #166534; }
-.ob.vep { background: #dbeafe; color: #1e40af; }
-.ob.pres { background: #ede9fe; color: #5b21b6; }
-.ob.pend { background: white; color: var(--muted); border: 1px dashed #cbd5e1; }
-.ob.pend.cerca { background: var(--amber-bg); color: #92400e; border: 1px solid #fcd34d; }
-.ob.venc { background: var(--red-bg); color: #991b1b; }
-.ob.nada { background: var(--gray-light); color: var(--muted); }
-.ob:hover { filter: brightness(.96); border-color: rgba(0,0,0,.15); }
-.leyenda { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 2px 0; font-size: 12px; color: var(--muted); align-items: center; }
-.leyenda .ob { display: inline-block; width: auto; padding: 2px 8px; cursor: default; }
-.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-.seg button { border: none; background: white; padding: 6px 12px; font-size: 13px; cursor: pointer; font-family: inherit; color: var(--muted); }
-.seg button.on { background: var(--primary); color: white; font-weight: 600; }
-/* modal de obligación */
-#ov .box.ob-box { max-width: 760px; }
-.ob-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
-.ob-head h3 { margin: 0; font-size: 17px; color: var(--primary-dark); }
-.ob-sec { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; }
-.ob-sec h4 { margin: 0 0 8px; font-size: 13px; color: var(--primary-dark); display: flex; align-items: center; gap: 6px; }
-.archivo { display: flex; align-items: center; gap: 6px; font-size: 12.5px; }
-.archivo a { color: var(--primary); }
-.nota-ver { font-size: 12px; padding: 6px 10px; border-radius: 8px; background: #fefce8; color: #854d0e; margin-top: 6px; }
-.nota-ver.ok { background: var(--green-bg); color: #166534; }
-.ob-pie { display: flex; justify-content: flex-end; gap: 6px; align-items: center; margin-top: 6px; }
-@media (max-width: 600px) { .kpi .k-v { font-size: 18px; } }
-td.num { white-space: nowrap; }
-#t-proximos, #p-lista, #c-lista, #r-dist, #r-manual, #k-lista { overflow-x: auto; }
-nav.tabs button .count { background: #f59e0b; color: #fff; padding: 1px 7px; border-radius: 10px; font-size: 11px; margin-left: 5px; font-weight: 700; display: none; }
-nav.tabs button .count:not(:empty) { display: inline-block; }
 </style>
 </head>
 <body>
 <div id="login">
   <div class="login-card">
     <h1>🏛 Impuestos</h1>
-    <div class="sub">Vencimientos, declaraciones, VEP y pagos<br>Claudia Adorno SRL</div>
+    <div class="sub">Lo que informa el estudio, repartido por unidad<br>Claudia Adorno SRL</div>
     <label>Email</label>
     <input type="email" id="email" placeholder="tu_email@ejemplo.com" autocomplete="username">
     <label>Contraseña</label>
@@ -600,95 +516,48 @@ nav.tabs button .count:not(:empty) { display: inline-block; }
 <div id="app">
   <div id="franja-prueba" class="prueba" style="display:none">🧪 MODO PRUEBA · solo se ven los comprobantes de test</div>
   <header>
-    <h1><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V10"/><path d="M19 21V10"/><path d="M9 21V10"/><path d="M15 21V10"/><path d="M2 10l10-6 10 6"/></svg>Impuestos</h1>
-    <span class="user-info" id="user-info"></span>
-    <nav class="tabs" id="tabs">
-      <button id="tab-tablero" class="active" onclick="switchTab('tablero')" title="Tablero"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="lb">Tablero</span></button>
-      <button id="tab-pagos" onclick="switchTab('pagos')" title="Pagos en Tesorería"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><line x1="6" y1="15" x2="10" y2="15"/></svg><span class="lb">Pagos</span><span class="count" id="cnt-pagos"></span></button>
-      <button id="tab-calendario" onclick="switchTab('calendario')" title="Calendario de vencimientos"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="lb">Calendario</span></button>
-      <button id="tab-reparto" onclick="switchTab('reparto')" title="Reparto a Gastos"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg><span class="lb">Reparto a Gastos</span></button>
-      <button id="tab-catalogo" onclick="switchTab('catalogo')" title="Impuestos y reglas"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><span class="lb">Impuestos</span></button>
-    </nav>
-    <div class="header-right">
-      <button class="hbtn kebab-tabs-btn" onclick="toggleTabsMenu(event)" title="Menú" aria-label="Menú"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
-      <span class="hsep"></span>
-      <a class="hbtn" href="https://claudiaadornosrl-prog.github.io/hub/" title="Volver al Hub" aria-label="Volver al Hub"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="lb">Hub</span></a>
-      <button class="hbtn" onclick="doLogout()" title="Salir" aria-label="Salir"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="lb">Salir</span></button>
-    </div>
+    <a class="hbtn" href="https://claudiaadornosrl-prog.github.io/hub/" title="Volver al Hub" aria-label="Volver al Hub" style="display:inline-flex;align-items:center;justify-content:center;height:34px;min-width:34px;padding:0 7px;border-radius:9px;text-decoration:none;color:inherit;opacity:.9;"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></a>
+    <h1>🏛 Impuestos · Claudia Adorno</h1>
+    <div class="spacer"></div>
+    <div class="user-info" id="user-info"></div>
+    <button class="logout" onclick="doLogout()">Salir</button>
   </header>
+  <nav class="tabs" id="tabs">
+    <button id="tab-mensual" class="active" onclick="switchTab('mensual')">📅 Mensual</button>
+    <button id="tab-catalogo" class="" onclick="switchTab('catalogo')">📇 Impuestos</button>
+    <button id="tab-vencimientos" class="" onclick="switchTab('vencimientos')">🧾 Vencimientos</button>
+  </nav>
   <main>
 
-    <section id="content-tablero" class="tab-content active">
+    <section id="content-mensual" class="tab-content active">
       <div class="filters">
-        <label>Año</label><select id="t-anio" onchange="renderTablero()"></select>
-        <label>Ver por</label>
-        <div class="seg"><button id="ver-periodo" class="on" onclick="cambiarVer('periodo')" title="Cada impuesto en el mes al que corresponde (IVA de septiembre)">Período</button><button id="ver-vencimiento" onclick="cambiarVer('vencimiento')" title="Cada impuesto en el mes en que vence o se pagó">Vencimiento</button></div>
-        <div class="stat" id="t-stat"></div>
-        <span id="t-acciones"></span>
-      </div>
-      <div class="kpis" id="t-kpis"></div>
-      <div class="card">
-        <h3>Próximos vencimientos <span class="mini">(los próximos 45 días, sin pago registrado)</span></h3>
-        <div id="t-proximos"></div>
-      </div>
-      <div class="grilla-wrap" id="t-grilla"></div>
-      <div class="leyenda" id="t-leyenda"></div>
-    </section>
-
-    <section id="content-pagos" class="tab-content">
-      <div class="filters">
-        <label>Desde</label><input type="date" id="p-desde" onchange="renderPagos()">
-        <label>Hasta</label><input type="date" id="p-hasta" onchange="renderPagos()">
-        <label>Mostrar</label>
-        <select id="p-filtro" onchange="pintarPagos()">
-          <option value="sin">Sin asignar</option><option value="todos">Todos</option><option value="asig">Asignados</option><option value="ign">Ignorados</option>
-        </select>
-        <div class="stat" id="p-stat"></div>
-        <span id="p-acciones"></span>
+        <label>Mes</label><select id="m-mes" onchange="renderMensual()"></select>
+        <label>Año</label><select id="m-anio" onchange="renderMensual()"></select>
+        <div class="stat" id="m-stat"></div>
       </div>
       <div class="card">
-        <div class="mini" style="margin-bottom:8px">Pagos a ARCA, AGIP y ARBA que aparecen en Tesorería (Galicia y Mercado Pago). Cada uno se asigna al impuesto y período que paga; la sugerencia sale de la nota que dejó administración. Lo que no sea un impuesto de la SRL se marca como ignorado.</div>
-        <div id="p-lista"></div>
-      </div>
-    </section>
-
-    <section id="content-calendario" class="tab-content">
-      <div class="filters">
-        <label>Año</label><select id="c-anio" onchange="renderCalendario()"></select>
-        <label>Impuesto</label><select id="c-imp" onchange="pintarCalendario()"><option value="">Todos</option></select>
-        <div class="stat" id="c-stat"></div>
-        <span id="c-acciones"></span>
+        <h3>Importes del mes <span class="mini">(lo que informa el estudio; el módulo los reparte por unidad)</span></h3>
+        <div id="m-carga"></div>
       </div>
       <div class="card">
-        <div class="mini" style="margin-bottom:8px">Vencimientos para CUIT terminado en 0 (30-70967311-0). Las fechas con ✓ salen de la norma oficial; las otras son estimadas y conviene confirmarlas en la <a href="https://seti.afip.gob.ar/av/seleccionVencimientos.do" target="_blank" rel="noopener">agenda de vencimientos de ARCA</a> (terminación 0). Cambiar una fecha acá cambia el vencimiento de las obligaciones que no tienen uno propio.</div>
-        <div id="c-lista"></div>
+        <h3>Cómo queda repartido</h3>
+        <div id="m-dist"></div>
       </div>
     </section>
-
-    <section id="content-reparto" class="tab-content">
-      <div class="filters">
-        <label>Mes</label><select id="r-mes" onchange="renderReparto()"></select>
-        <label>Año</label><select id="r-anio" onchange="renderReparto()"></select>
-        <div class="stat" id="r-stat"></div>
-      </div>
-      <div class="card">
-        <h3>Cómo queda repartido en la planilla de Gastos</h3>
-        <div class="mini" style="margin-bottom:8px">Solo los impuestos que son gasto. Ingresos Brutos se reparte por la venta de cada local con el <b>impuesto determinado</b> de la DDJJ (se carga en el Tablero). Cargas sociales salen del sueldo banco. Débitos y créditos bancarios se suman solos desde Tesorería. IVA, Ganancias y las retenciones no son gasto y no van.</div>
-        <div id="r-dist"></div>
-      </div>
-      <div class="card" id="r-manual-card" style="display:none">
-        <h3>Impuestos que se cargan a mano por unidad</h3>
-        <div id="r-manual"></div>
-      </div>
-    </section>
-
     <section id="content-catalogo" class="tab-content">
       <div class="card">
-        <h3>Impuestos y su regla</h3>
-        <div class="mini" style="margin-bottom:8px">Solo el admin edita. Cada impuesto dice qué organismo lo cobra, cada cuánto vence, quién lo presenta y si va a la planilla de Gastos (y cómo se reparte).</div>
-        <div id="k-lista"></div>
-        <div id="k-form" style="display:none;margin-top:12px"></div>
-        <div style="margin-top:8px" id="k-nuevo"></div>
+        <h3>Impuestos y su regla de reparto</h3>
+        <div class="mini" style="margin-bottom:8px">Solo el admin edita. La regla dice a qué unidad va cada peso: por venta de cada local, % del sueldo banco, todo a una unidad, o cargado a mano por unidad.</div>
+        <div id="c-lista"></div>
+        <div id="c-form" style="display:none;margin-top:12px"></div>
+        <button class="btn" id="c-nuevo" onclick="nuevoImpuesto()" style="margin-top:10px">➕ Nuevo impuesto</button>
+      </div>
+    </section>
+    <section id="content-vencimientos" class="tab-content">
+      <div class="card">
+        <h3>Vencimientos y pagos</h3>
+        <div class="mini">Preparado para los VEPs que prepara el estudio: cada importe mensual puede llevar vencimiento, fecha de pago y comprobante. Por ahora se carga a mano desde 📅 Mensual; la subida del VEP viene después.</div>
+        <div id="v-lista" style="margin-top:10px"></div>
       </div>
     </section>
 
@@ -769,569 +638,135 @@ async function doLogout() { await sb.auth.signOut(); location.reload(); }
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js').catch(() => {});
 
 
-// ═══ IMPUESTOS · fase 1 (28-oct-2026, JP) ════════════════════════════════════════════════════
-// Cada impuesto de cada período es una OBLIGACIÓN (tabla impuestos_mensual): vencimiento, DDJJ,
-// VEP y pago. El Tablero junta el calendario (impuestos_calendario) con lo cargado. Los pagos
-// salen de Tesorería (RPC impuestos_pagos_tesoreria, solo lectura) y se asignan a su obligación.
-// 🚨 Impuestos trabaja SIEMPRE con datos reales (es_prueba = false): MODO_PRUEBA no aplica acá.
-let CAT = [], UNIDADES = [], esAdmin = false, TAB = [], VER = 'periodo', ANIO = null, PAGOS = [], CAL = [], OB = null;
-const ORG = { arca: 'ARCA', agip: 'AGIP', arba: 'ARBA', comarb: 'Conv. Multilateral', municipio: 'Municipio', otro: 'Otro' };
-const FREC = { mensual: 'mensual', quincenal: 'quincenal', anual: 'anual', cuotas: 'en cuotas', eventual: 'eventual' };
-const EST = {
-  pagada: { t: 'Pagada', c: 'ok' }, con_vep: { t: 'VEP listo', c: 'vep' }, presentada: { t: 'Presentada', c: 'pres' },
-  a_presentar: { t: 'A presentar', c: 'pend' }, sin_movimiento: { t: 'Sin movimiento', c: 'nada' },
-  no_corresponde: { t: 'No corresponde', c: 'nada' }, vencida: { t: 'Vencida sin pago registrado', c: 'venc' },
-};
-const ICO = {
-  guardar: '<svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>',
-  cerrar: '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
-  ok: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16 10"/></svg>',
-  todo: '<svg viewBox="0 0 24 24"><path d="M2 12.5l3.5 3.5L13 8.5"/><path d="M10 15l1 1 8-8"/></svg>',
-  editar: '<svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
-  ignorar: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="5.6" y1="5.6" x2="18.4" y2="18.4"/></svg>',
-  volver: '<svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.5 15a9 9 0 1 0 2.1-9.4L1 10"/></svg>',
-  ver: '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
-  desvincular: '<svg viewBox="0 0 24 24"><path d="M18.8 13.4l1.4-1.4a4 4 0 0 0-5.6-5.6L13 8"/><path d="M5.2 10.6 3.8 12a4 4 0 0 0 5.6 5.6L11 16"/><line x1="3" y1="3" x2="21" y2="21"/></svg>',
-  subir: '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>',
-  mas: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
-  sync: '<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15"/></svg>',
-  borrar: '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>',
-  pdf: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
-};
-const ib = (ico, title, onclick, extra = '', dis = false) =>
-  `<button class="ib ${extra}" title="${esc(title)}" aria-label="${esc(title)}" onclick="${onclick}" ${dis ? 'disabled' : ''}>${ICO[ico]}</button>`;
-const MCORTO = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
-const fmtF = d => d ? `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(0, 4)}` : '—';
-const perTxt = (p, s) => !p ? '—' : /^Anticipo /.test(s || '') ? s : `${MCORTO[Number(p.slice(5, 7)) - 1]} ${p.slice(0, 4)}${s ? ' · ' + s : ''}`;
-const corto = n => n == null || isNaN(n) ? '' : Math.abs(n) >= 1e6 ? (n / 1e6).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' M'
-  : Math.abs(n) >= 1e3 ? Math.round(n / 1e3).toLocaleString('es-AR') + ' mil' : Math.round(n).toLocaleString('es-AR');
-const estadoDe = r => r.vencida ? 'vencida' : r.estado;
-const montoDe = r => r.pagado_at ? r.pago_importe : (r.importe_vep ?? r.importe);
-const nombreImp = k => (CAT.find(c => c.clave === k) || {}).nombre || k;
-const uniNombre = k => (UNIDADES.find(u => u.clave === k) || {}).nombre || k || '—';
-const sumar = (arr, f) => arr.reduce((s, x) => s + (Number(f(x)) || 0), 0);
-const addDias = (d, n) => { const x = new Date(d + 'T12:00:00'); x.setDate(x.getDate() + n); return x.toISOString().slice(0, 10); };
-const numOrNull = id => { const v = document.getElementById(id).value; return v === '' || v == null ? null : Number(v); };
-const txtOrNull = id => { const v = (document.getElementById(id).value || '').trim(); return v === '' ? null : v; };
-const subCorto = s => !s ? '' : s.replace(/^Anticipo (\d+) · \d+$/, 'A$1').replace(/^cuota (\d+) · \d+$/, 'C$1').replace(/^pago /, '').replace(' anual', '');
-
-async function init() {
-  // Impuestos trabaja con datos reales: la franja de prueba no aplica.
-  document.getElementById('franja-prueba').style.display = 'none';
+let CAT = [], UNIDADES = [], esAdmin = false;
+async function init(){
   const [c, u, a] = await Promise.all([
     sb.from('impuestos_catalogo').select('*').order('orden'),
     sb.from('gastos_unidades').select('*').eq('activo', true).order('orden'),
     sb.rpc('rrhh_is_admin')]);
   CAT = c.data || []; UNIDADES = u.data || []; esAdmin = !!a.data;
-  const hoy = hoyAR(), y = Number(hoy.slice(0, 4));
-  const anios = [y - 1, y, y + 1].map(v => `<option value="${v}" ${v === y ? 'selected' : ''}>${v}</option>`).join('');
-  ['t-anio', 'c-anio', 'r-anio'].forEach(id => document.getElementById(id).innerHTML = anios);
-  const rm = document.getElementById('r-mes');
-  rm.innerHTML = MESES.map((m, i) => `<option value="${i + 1}">${m}</option>`).join(''); rm.value = Number(hoy.slice(5, 7));
-  document.getElementById('p-desde').value = `${y}-01-01`; document.getElementById('p-hasta').value = hoy;
-  document.getElementById('t-acciones').innerHTML =
-    ib('mas', 'Agregar una obligación que no está en el calendario (ej. un plan de pagos o un despacho)', 'nuevaObligacion()') +
-    ib('sync', 'Actualizar débitos y créditos bancarios desde Tesorería', 'sincronizarBanco(false)');
-  document.getElementById('p-acciones').innerHTML = ib('todo', 'Aceptar todas las sugerencias completas de la lista', 'aceptarTodas()');
-  document.getElementById('c-acciones').innerHTML = ib('mas', 'Agregar un vencimiento', 'nuevoVencimiento()');
-  document.getElementById('c-imp').innerHTML = '<option value="">Todos</option>' + CAT.filter(k => k.activo).map(k => `<option value="${k.clave}">${esc(k.nombre)}</option>`).join('');
-  document.getElementById('t-leyenda').innerHTML = 'Referencias: ' +
-    ['pagada', 'con_vep', 'presentada', 'a_presentar', 'vencida', 'sin_movimiento'].map(e => `<span class="ob ${EST[e].c}">${EST[e].t}</span>`).join('') +
-    '<span class="ob pend cerca">Vence en 10 días</span>';
-  await sincronizarBanco(true);
-  await renderTablero();
-  renderPagos(true);
+  const hoy = hoyAR(); const sm = document.getElementById('m-mes'), sa = document.getElementById('m-anio');
+  sm.innerHTML = MESES.map((m,i) => `<option value="${i+1}">${m}</option>`).join('');
+  const y = Number(hoy.slice(0,4)); sa.innerHTML = [y-1, y, y+1].map(v => `<option value="${v}">${v}</option>`).join('');
+  sm.value = Number(hoy.slice(5,7)); sa.value = y;
+  document.getElementById('c-nuevo').style.display = esAdmin ? '' : 'none';
+  await renderMensual(); renderCatalogo(); await renderVencimientos();
 }
-function onTab(k) {
-  document.getElementById('tabs').classList.remove('open');
-  if (k === 'tablero') renderTablero();
-  else if (k === 'pagos') renderPagos();
-  else if (k === 'calendario') renderCalendario();
-  else if (k === 'reparto') renderReparto();
-  else if (k === 'catalogo') renderCatalogo();
-}
-function toggleTabsMenu(ev) { ev.stopPropagation(); document.getElementById('tabs').classList.toggle('open'); }
-document.addEventListener('click', e => { const n = document.getElementById('tabs'); if (n && n.classList.contains('open') && !n.contains(e.target)) n.classList.remove('open'); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.getElementById('ov')) cerrarOv(); });
+function onTab(k){ if (k === 'vencimientos') renderVencimientos(); }
+const periodoSel = () => `${document.getElementById('m-anio').value}-${String(document.getElementById('m-mes').value).padStart(2,'0')}-01`;
+const uniNombre = k => (UNIDADES.find(u => u.clave === k) || {}).nombre || k || '—';
 
-async function sincronizarBanco(silencioso) {
-  const anio = Number(document.getElementById('t-anio').value || hoyAR().slice(0, 4));
-  if (anio > Number(hoyAR().slice(0, 4))) return;
-  const { data, error } = await sb.rpc('impuestos_sync_banco', { p_anio: anio });
-  if (error) { if (!silencioso) toast('No se pudo leer Tesorería: ' + error.message, 'error'); return; }
-  if (!silencioso) { toast(data ? `Débitos y créditos: ${data} meses actualizados` : 'Débitos y créditos ya estaban al día', 'success'); renderTablero(); }
-}
-
-// ── TABLERO ────────────────────────────────────────────────────────────────────────────────────
-function cambiarVer(v) {
-  VER = v;
-  document.getElementById('ver-periodo').classList.toggle('on', v === 'periodo');
-  document.getElementById('ver-vencimiento').classList.toggle('on', v === 'vencimiento');
-  pintarGrilla();
-}
-async function renderTablero() {
-  ANIO = Number(document.getElementById('t-anio').value);
-  const { data, error } = await sb.rpc('impuestos_tablero', { p_anio: ANIO });
-  if (error) { document.getElementById('t-grilla').innerHTML = `<div class="empty">${esc(error.message)}</div>`; return; }
-  TAB = data || [];
-  pintarKpis(); pintarProximos(); pintarGrilla();
-}
-function pintarKpis() {
-  const hoy = hoyAR();
-  const pag = TAB.filter(r => r.pagado_at && r.pagado_at.slice(0, 4) === String(ANIO));
-  const pend = TAB.filter(r => !r.pagado_at && !r.vencida && !['sin_movimiento', 'no_corresponde'].includes(r.estado) && r.vencimiento && r.vencimiento >= hoy);
-  const conMonto = pend.filter(r => montoDe(r) != null);
-  const venc = TAB.filter(r => r.vencida);
-  const prox = pend.slice().sort((a, b) => a.vencimiento.localeCompare(b.vencimiento))[0];
-  document.getElementById('t-kpis').innerHTML = `
-    <div class="kpi pag"><div class="k-t">Pagado en ${ANIO}</div><div class="k-v">${plata(sumar(pag, r => r.pago_importe))}</div><div class="k-s">${pag.length} pagos registrados</div></div>
-    <div class="kpi apag"><div class="k-t">A pagar</div><div class="k-v">${conMonto.length ? plata(sumar(conMonto, montoDe)) : '—'}</div><div class="k-s">${pend.length} por vencer${pend.length - conMonto.length ? ` · ${pend.length - conMonto.length} todavía sin importe` : ''}</div></div>
-    <div class="kpi venc"><div class="k-t">Vencidas sin pago registrado</div><div class="k-v">${venc.length}</div><div class="k-s">${venc.length ? 'Puede estar pagado y sin asignar: mirá Pagos' : 'Todo al día'}</div></div>
-    <div class="kpi"><div class="k-t">Próximo vencimiento</div><div class="k-v" style="font-size:17px">${prox ? esc(prox.nombre) : '—'}</div><div class="k-s">${prox ? `${perTxt(prox.periodo, prox.subperiodo)} · vence ${fmtF(prox.vencimiento)}` : 'Nada pendiente'}</div></div>`;
-  document.getElementById('t-stat').textContent = `${TAB.length} obligaciones en ${ANIO}`;
-}
-function pintarProximos() {
-  const hoy = hoyAR(), hasta = addDias(hoy, 45);
-  const L = TAB.map((r, i) => ({ r, i }))
-    .filter(({ r }) => !r.pagado_at && !['sin_movimiento', 'no_corresponde'].includes(r.estado) && r.vencimiento && r.vencimiento >= addDias(hoy, -15) && r.vencimiento <= hasta)
-    .sort((a, b) => a.r.vencimiento.localeCompare(b.r.vencimiento));
-  if (!L.length) { document.getElementById('t-proximos').innerHTML = '<div class="mini">Nada vence en los próximos 45 días.</div>'; return; }
-  let h = '<table><tr><th>Vence</th><th>Impuesto</th><th>Período</th><th>Estado</th><th class="num">Importe</th><th></th></tr>';
-  for (const { r, i } of L) {
-    const e = estadoDe(r);
-    h += `<tr><td style="white-space:nowrap">${fmtF(r.vencimiento)}${r.verificado ? '' : ' <span class="mini" title="Fecha estimada: verificarla en la agenda de ARCA">≈</span>'}</td>
-      <td>${esc(r.nombre)} <span class="mini">${esc(ORG[r.organismo] || '')}</span></td><td>${perTxt(r.periodo, r.subperiodo)}</td>
-      <td><span class="ob ${EST[e].c}" style="display:inline-block;width:auto;padding:2px 8px;cursor:default">${EST[e].t}</span></td>
-      <td class="num">${montoDe(r) != null ? plata(montoDe(r)) : '<span class="mini">sin importe</span>'}</td>
-      <td>${ib('editar', 'Abrir y cargar DDJJ, VEP o pago', `abrirOb(${i})`)}</td></tr>`;
-  }
-  document.getElementById('t-proximos').innerHTML = h + '</table>';
-}
-function colDe(r) {
-  const ref = VER === 'periodo' ? r.periodo : (r.vencimiento || r.pagado_at || r.periodo);
-  const y = Number(ref.slice(0, 4)), m = Number(ref.slice(5, 7));
-  return y < ANIO ? 0 : y > ANIO ? 13 : m;
-}
-function pintarGrilla() {
-  if (!TAB.length) { document.getElementById('t-grilla').innerHTML = '<div class="empty">No hay obligaciones para este año.</div>'; return; }
-  const hoy = hoyAR(), filas = new Map();
-  TAB.forEach((r, i) => {
-    if (!filas.has(r.impuesto)) filas.set(r.impuesto, { r, celdas: Array.from({ length: 14 }, () => []) });
-    filas.get(r.impuesto).celdas[colDe(r)].push(i);
-  });
-  const hayAnt = [...filas.values()].some(f => f.celdas[0].length), haySig = [...filas.values()].some(f => f.celdas[13].length);
-  const cols = [...(hayAnt ? [0] : []), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ...(haySig ? [13] : [])];
-  const tit = c => c === 0 ? String(ANIO - 1) : c === 13 ? String(ANIO + 1) : MCORTO[c - 1];
-  let h = `<table class="grilla"><tr><th class="imp">Impuesto</th>${cols.map(c => `<th class="${c === 0 || c === 13 ? 'otro' : ''}" title="${c === 0 || c === 13 ? (VER === 'periodo' ? 'Período de ese año' : 'Vence o se pagó ese año') : ''}">${tit(c)}</th>`).join('')}<th class="tot">Pagado ${ANIO}</th></tr>`;
-  const totCol = Array(14).fill(0);
-  for (const [, f] of filas) {
-    const k = f.r;
-    let tot = 0;
-    h += `<tr><td class="imp"><b>${esc(k.nombre)}</b><div class="mini">${esc(ORG[k.organismo] || '')} · ${esc(FREC[k.frecuencia] || '')}</div></td>`;
-    for (const c of cols) {
-      const items = f.celdas[c].map(i => {
-        const r = TAB[i], e = estadoDe(r), m = montoDe(r);
-        const cerca = e === 'a_presentar' || e === 'presentada' || e === 'con_vep' ? (r.vencimiento && r.vencimiento >= hoy && r.vencimiento <= addDias(hoy, 10)) : false;
-        if (r.pagado_at && r.pagado_at.slice(0, 4) === String(ANIO)) { tot += Number(r.pago_importe) || 0; totCol[c] += Number(r.pago_importe) || 0; }
-        const tip = `${r.nombre} · ${perTxt(r.periodo, r.subperiodo)} · ${EST[e].t}${r.vencimiento ? ' · vence ' + fmtF(r.vencimiento) : ''}${r.pagado_at ? ' · pagado ' + fmtF(r.pagado_at) : ''}${m != null ? ' · ' + plata(m) : ''}`;
-        const sub = subCorto(r.subperiodo), lbl = m != null ? corto(m) : (e === 'sin_movimiento' || e === 'no_corresponde' ? '—' : '·');
-        return `<button class="ob ${EST[e].c}${cerca ? ' cerca' : ''}" title="${esc(tip)}" onclick="abrirOb(${i})">${sub ? `<small>${esc(sub)}</small>` : ''}${lbl}</button>`;
-      }).join('');
-      h += `<td class="cel ${c === 0 || c === 13 ? 'otro' : ''}">${items}</td>`;
-    }
-    h += `<td class="tot">${tot ? plata(tot) : '—'}</td></tr>`;
-  }
-  h += `<tr class="pie"><td class="imp" style="background:var(--gray-light)">Pagado en el mes</td>${cols.map(c => `<td class="${c === 0 || c === 13 ? 'otro' : ''}">${totCol[c] ? corto(totCol[c]) : ''}</td>`).join('')}<td class="tot">${plata(totCol.reduce((a, b) => a + b, 0))}</td></tr>`;
-  document.getElementById('t-grilla').innerHTML = h + '</table>';
-}
-
-// ── OBLIGACIÓN (modal) ─────────────────────────────────────────────────────────────────────────
-function cerrarOv() { const o = document.getElementById('ov'); if (o) o.remove(); OB = null; }
-function abrirOv(html, clase = '') {
-  const viejo = document.getElementById('ov'); if (viejo) viejo.remove();   // no borra OB: la ficha lo usa al guardar
-  const ov = document.createElement('div'); ov.id = 'ov';            // no se cierra clickeando afuera (regla JP)
-  ov.innerHTML = `<div class="box ${clase}">${html}</div>`;
-  document.body.appendChild(ov);
-}
-function abrirOb(i) { OB = { ...TAB[i] }; pintarOb(); }
-async function abrirObPorId(id) {
-  const { data, error } = await sb.from('impuestos_mensual').select('*').eq('id', id).single();
-  if (error || !data) { toast('No encontré la obligación', 'error'); return; }
-  const k = CAT.find(c => c.clave === data.impuesto) || {};
-  const { data: cal } = await sb.from('impuestos_calendario').select('*').eq('impuesto', data.impuesto).eq('periodo', data.periodo);
-  const c = (cal || []).find(x => (x.subperiodo || '') === (data.subperiodo || '')) || {};
-  OB = { ...data, obligacion_id: data.id, nombre: k.nombre, organismo: k.organismo, frecuencia: k.frecuencia,
-         vencimiento: data.vencimiento || c.vencimiento || null, vto_calendario: c.vencimiento || null, verificado: !!c.verificado, fuente: c.fuente || null, vencida: false };
-  pintarOb();
-}
-function nuevaObligacion() {
-  const hoy = hoyAR();
-  OB = { nuevo: true, impuesto: '', periodo: hoy.slice(0, 8) + '01', subperiodo: null, estado: 'a_presentar', origen: 'manual' };
-  pintarOb();
-}
-function campoArchivo(tipo, path, etiqueta) {
-  return `<div class="archivo">${ICO.pdf.replace('<svg', '<svg width="16" height="16" style="stroke:currentColor;fill:none;stroke-width:2"')}
-    <span id="arch-${tipo}">${path ? `<a href="#" onclick="verArchivo('${esc(path)}');return false">${esc(path.split('/').pop())}</a>` : `<span class="mini">sin ${etiqueta}</span>`}</span>
-    <label class="ib" title="Subir ${etiqueta} (PDF o imagen)" style="cursor:pointer">${ICO.subir}<input type="file" accept="application/pdf,image/*" style="display:none" onchange="subirArchivo('${tipo}', this)"></label></div>`;
-}
-function pintarOb() {
-  const r = OB, e = r.nuevo ? 'a_presentar' : estadoDe(r);
-  const cab = r.nuevo
-    ? `<div class="form" style="margin-bottom:10px">
-         <label>Impuesto <select id="o-imp">${CAT.filter(k => k.activo).map(k => `<option value="${k.clave}">${esc(k.nombre)}</option>`).join('')}</select></label>
-         <label>Período <input type="month" id="o-per" value="${r.periodo.slice(0, 7)}"></label>
-         <label>Detalle (1Q, cuota 2…) <input id="o-sub" placeholder="opcional" data-sin-miles></label></div>`
-    : '';
-  const marca = ['sin_movimiento', 'no_corresponde'].includes(r.estado) ? r.estado : '';
-  const pagoTes = r.pago_mov_id
-    ? `<div class="nota-ver ok">Pago tomado de Tesorería (movimiento ${r.pago_mov_id}). ${ib('desvincular', 'Desvincular este pago de la obligación', 'desasignarOb()')}</div>` : '';
-  const verif = r.nuevo ? '' : r.vto_calendario || r.fuente
-    ? `<div class="nota-ver ${r.verificado ? 'ok' : ''}">${r.verificado ? '✓ Fecha oficial' : '≈ Fecha estimada'}${r.fuente ? ': ' + esc(r.fuente) : ''}</div>` : '';
-  abrirOv(`
-    <div class="ob-head">
-      <div style="flex:1">
-        <h3>${r.nuevo ? 'Nueva obligación' : esc(r.nombre) + ' · ' + perTxt(r.periodo, r.subperiodo)}</h3>
-        ${r.nuevo ? '' : `<div class="mini">${esc(ORG[r.organismo] || '')} · ${esc(FREC[r.frecuencia] || '')} · <span class="ob ${EST[e].c}" style="display:inline-block;width:auto;padding:1px 8px;cursor:default">${EST[e].t}</span>${r.actualizado_por ? ` · último cambio ${esc(r.actualizado_por)}` : ''}</div>`}
-      </div>
-      ${ib('cerrar', 'Cerrar sin guardar', 'cerrarOv()')}
-    </div>
-    ${cab}
-    <div class="ob-sec"><h4>Vencimiento</h4>
-      <div class="form"><label>Vence <input type="date" id="o-vto" value="${r.vencimiento || ''}"></label>
-        <label>Marcar como <select id="o-marca"><option value="">(según lo cargado)</option>
-          <option value="sin_movimiento" ${marca === 'sin_movimiento' ? 'selected' : ''}>Sin movimiento (DDJJ en cero)</option>
-          <option value="no_corresponde" ${marca === 'no_corresponde' ? 'selected' : ''}>No corresponde</option></select></label></div>
-      ${verif}</div>
-    <div class="ob-sec"><h4>Declaración jurada</h4>
-      <div class="form">
-        <label>Impuesto determinado <input type="number" step="0.01" id="o-det" value="${r.importe ?? ''}"></label>
-        <label>Saldo a favor que queda <input type="number" step="0.01" id="o-saf" value="${r.saldo_a_favor ?? ''}"></label>
-        <label>Presentada el <input type="date" id="o-pres" value="${r.presentada_at || ''}"></label>
-        <label>Nº de transacción <input id="o-ddjjnro" value="${esc(r.ddjj_nro || '')}" data-sin-miles></label></div>
-      <div style="margin-top:8px">${campoArchivo('ddjj', r.ddjj_path, 'DDJJ')}</div></div>
-    <div class="ob-sec"><h4>VEP</h4>
-      <div class="form">
-        <label>Nº de VEP <input id="o-vepnro" value="${esc(r.vep_nro || '')}" data-sin-miles></label>
-        <label>Importe a pagar <input type="number" step="0.01" id="o-vepimp" value="${r.importe_vep ?? ''}"></label>
-        <label>El VEP vence <input type="date" id="o-vepvto" value="${r.vep_vto || ''}"></label></div>
-      <div style="margin-top:8px">${campoArchivo('vep', r.vep_path, 'VEP')}</div></div>
-    <div class="ob-sec"><h4>Pago</h4>
-      <div class="form">
-        <label>Pagado el <input type="date" id="o-pag" value="${r.pagado_at || ''}"></label>
-        <label>Importe pagado <input type="number" step="0.01" id="o-pagimp" value="${r.pago_importe ?? ''}"></label></div>
-      <div style="margin-top:8px">${campoArchivo('pago', r.comprobante_path, 'comprobante')}</div>
-      ${pagoTes}</div>
-    <div class="ob-sec"><h4>Notas</h4><textarea id="o-notas" rows="2" style="width:100%;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-family:inherit">${esc(r.notas || '')}</textarea></div>
-    <div class="ob-pie">${ib('cerrar', 'Cancelar', 'cerrarOv()')}${ib('guardar', 'Guardar', 'guardarOb()', 'main')}</div>`, 'ob-box');
-  if (r.nuevo) document.getElementById('o-imp').value = CAT.find(k => k.activo)?.clave || '';
-}
-async function subirArchivo(tipo, input) {
-  const f = input.files && input.files[0]; if (!f) return;
-  if (f.size > 15 * 1024 * 1024) { toast('El archivo pesa más de 15 MB', 'error'); return; }
-  const imp = OB.nuevo ? document.getElementById('o-imp').value : OB.impuesto;
-  const per = OB.nuevo ? (document.getElementById('o-per').value || '') + '-01' : OB.periodo;
-  const sub = OB.nuevo ? txtOrNull('o-sub') : OB.subperiodo;
-  const ext = (f.name.split('.').pop() || 'pdf').toLowerCase().replace(/[^a-z0-9]/g, '');
-  const limpio = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  const path = `${per.slice(0, 4)}/${imp}/${per.slice(0, 7)}${sub ? '_' + limpio(sub) : ''}_${tipo}_${Date.now()}.${ext}`;
-  document.getElementById('arch-' + tipo).innerHTML = '<span class="mini">subiendo…</span>';
-  const { error } = await sb.storage.from('impuestos').upload(path, f, { upsert: false, contentType: f.type || undefined });
-  if (error) { toast('No se pudo subir: ' + error.message, 'error'); document.getElementById('arch-' + tipo).innerHTML = '<span class="mini">no se subió</span>'; return; }
-  OB[tipo === 'ddjj' ? 'ddjj_path' : tipo === 'vep' ? 'vep_path' : 'comprobante_path'] = path;
-  document.getElementById('arch-' + tipo).innerHTML = `<a href="#" onclick="verArchivo('${esc(path)}');return false">${esc(f.name)}</a> <span class="mini">(se guarda al tocar Guardar)</span>`;
-}
-async function verArchivo(path) {
-  const { data, error } = await sb.storage.from('impuestos').createSignedUrl(path, 600);
-  if (error || !data) { toast('No se pudo abrir el archivo: ' + (error?.message || ''), 'error'); return; }
-  window.open(data.signedUrl, '_blank', 'noopener');
-}
-async function guardarOb() {
-  const r = OB;
-  const vto = txtOrNull('o-vto');
-  const row = {
-    vencimiento: vto && vto === r.vto_calendario ? null : vto,     // si es la del calendario, manda el calendario
-    importe: numOrNull('o-det'), saldo_a_favor: numOrNull('o-saf'), presentada_at: txtOrNull('o-pres'), ddjj_nro: txtOrNull('o-ddjjnro'),
-    vep_nro: txtOrNull('o-vepnro'), importe_vep: numOrNull('o-vepimp'), vep_vto: txtOrNull('o-vepvto'),
-    pagado_at: txtOrNull('o-pag'), pago_importe: numOrNull('o-pagimp'), notas: txtOrNull('o-notas'),
-    ddjj_path: r.ddjj_path || null, vep_path: r.vep_path || null, comprobante_path: r.comprobante_path || null,
-    estado: document.getElementById('o-marca').value || 'a_presentar',  // el trigger lo recalcula según lo cargado
-  };
-  if (row.pagado_at && row.pago_importe == null) row.pago_importe = row.importe_vep ?? row.importe;
-  if (row.vep_vto && row.vep_vto < '2000-01-01') { toast('Fecha de vencimiento del VEP inválida', 'error'); return; }
-  let q;
-  if (r.obligacion_id) q = sb.from('impuestos_mensual').update(row).eq('id', r.obligacion_id).select('id').single();
-  else {
-    const imp = r.nuevo ? document.getElementById('o-imp').value : r.impuesto;
-    const per = r.nuevo ? (document.getElementById('o-per').value ? document.getElementById('o-per').value + '-01' : null) : r.periodo;
-    const sub = r.nuevo ? txtOrNull('o-sub') : r.subperiodo;
-    if (!imp || !per) { toast('Elegí el impuesto y el período', 'error'); return; }
-    q = sb.from('impuestos_mensual').insert({ ...row, impuesto: imp, periodo: per, subperiodo: sub, unidad: null, es_prueba: false, origen: 'manual', cargado_por: session.email }).select('id').single();
-  }
-  const { error } = await q;
-  if (error) { toast('No se pudo guardar: ' + (/impuestos_mensual_uk/.test(error.message) ? 'ya existe esa obligación (mismo impuesto, período y detalle)' : error.message), 'error'); return; }
-  toast('Guardado', 'success'); cerrarOv(); await renderTablero();
-}
-async function desasignarOb() {
-  if (!OB || !OB.obligacion_id) return;
-  if (!confirm('¿Desvincular el pago de Tesorería? La obligación queda sin pago registrado y el movimiento vuelve a la lista de Pagos.')) return;
-  const { error } = await sb.rpc('impuestos_desasignar_pago', { p_obligacion_id: OB.obligacion_id });
-  if (error) { toast('No se pudo: ' + error.message, 'error'); return; }
-  toast('Pago desvinculado', 'success'); cerrarOv(); await renderTablero(); renderPagos(true);
-}
-
-// ── PAGOS (conciliación con Tesorería) ─────────────────────────────────────────────────────────
-async function renderPagos(silencioso) {
-  const d = document.getElementById('p-desde').value, h = document.getElementById('p-hasta').value;
-  if (!d || !h) return;
-  const { data, error } = await sb.rpc('impuestos_pagos_tesoreria', { p_desde: d, p_hasta: h });
-  if (error) { if (!silencioso) document.getElementById('p-lista').innerHTML = `<div class="empty">${esc(error.message)}</div>`; return; }
-  PAGOS = data || [];
-  const sin = PAGOS.filter(p => !p.obligacion_id && !p.ignorado).length;
-  document.getElementById('cnt-pagos').textContent = sin ? String(sin) : '';
-  pintarPagos();
-}
-const sugCompleta = p => p.sug_impuesto && p.sug_periodo && (!['sicore_ganancias', 'anticipo_ganancias'].includes(p.sug_impuesto) || p.sug_subperiodo);
-function pintarPagos() {
-  const f = document.getElementById('p-filtro').value;
-  const L = PAGOS.map((p, i) => ({ p, i })).filter(({ p }) =>
-    f === 'todos' ? true : f === 'asig' ? !!p.obligacion_id : f === 'ign' ? p.ignorado : (!p.obligacion_id && !p.ignorado));
-  const tot = sumar(L.map(x => x.p), p => p.importe);
-  document.getElementById('p-stat').textContent = `${L.length} pagos · ${plata(tot)}`;
-  if (!L.length) { document.getElementById('p-lista').innerHTML = `<div class="empty">${f === 'sin' ? 'No hay pagos sin asignar en estas fechas.' : 'No hay pagos para mostrar.'}</div>`; return; }
-  let h = '<table><tr><th>Fecha</th><th>Cuenta</th><th>Detalle en Tesorería</th><th class="num">Importe</th><th>VEP</th><th>Impuesto</th><th></th></tr>';
-  for (const { p, i } of L) {
-    let imp, acc = '';
-    if (p.obligacion_id) {
-      imp = `<span class="chip green">${esc(p.asignado_a)}</span>`;
-      acc = ib('ver', 'Ver la obligación', `abrirObPorId(${p.obligacion_id})`) + ib('editar', 'Asignarlo a otra obligación', `asignarPago(${i})`);
-    } else if (p.ignorado) {
-      imp = '<span class="chip gray">Ignorado</span>';
-      acc = ib('volver', 'Volver a mostrarlo', `restaurarPago(${i})`);
+async function renderMensual(){
+  const per = periodoSel();
+  const { data: rows } = await sb.from('impuestos_mensual').select('*').eq('periodo', per).eq('es_prueba', MODO_PRUEBA);
+  const R = rows || [];
+  let html = '<table><tr><th>Impuesto</th><th>Regla</th><th class="num">Importe del mes</th><th>Vencimiento</th><th>Pagado</th><th></th></tr>';
+  for (const c of CAT.filter(x => x.activo)){
+    if (c.prorrateo === 'manual'){
+      for (const u of UNIDADES){
+        const r = R.find(x => x.impuesto === c.clave && x.unidad === u.clave) || {};
+        html += fila(c, r, u);
+      }
     } else {
-      imp = sugCompleta(p) ? `<span class="mini">Sugerido:</span> ${esc(nombreImp(p.sug_impuesto))} · ${perTxt(p.sug_periodo, p.sug_subperiodo)}`
-        : p.sug_impuesto ? `<span class="mini">Parece ${esc(nombreImp(p.sug_impuesto))}, falta el período</span>` : '<span class="mini">Sin sugerencia</span>';
-      acc = (sugCompleta(p) ? ib('ok', 'Aceptar la sugerencia', `aceptarPago(${i})`, 'ok') : '') +
-        ib('editar', 'Asignar a mano', `asignarPago(${i})`) + ib('ignorar', 'No es un impuesto de la SRL: ignorar', `ignorarPago(${i})`);
+      const r = R.find(x => x.impuesto === c.clave && !x.unidad) || {};
+      html += fila(c, r, null);
     }
-    h += `<tr><td>${fmtF(p.fecha)}</td><td class="mini">${esc(p.cuenta)}</td>
-      <td>${esc(p.nota || p.descripcion)}${p.nota ? `<div class="mini">${esc(p.descripcion)}</div>` : ''}</td>
-      <td class="num">${plata2(p.importe)}</td><td class="mini">${esc(p.vep_nro || '')}</td><td>${imp}</td><td style="white-space:nowrap">${acc}</td></tr>`;
   }
-  document.getElementById('p-lista').innerHTML = h + '</table>';
+  document.getElementById('m-carga').innerHTML = html + '</table>';
+  const { data: dist, error } = await sb.rpc('impuestos_distribuir', { p_periodo: per, p_prueba: MODO_PRUEBA });
+  if (error){ document.getElementById('m-dist').innerHTML = `<div class="empty">${esc(error.message)}</div>`; return; }
+  const D = dist || [];
+  if (!D.length){ document.getElementById('m-dist').innerHTML = '<div class="empty">Sin importes cargados para este mes.</div>'; document.getElementById('m-stat').textContent = ''; return; }
+  let h = '<table><tr><th>Impuesto</th><th>Categoría en la planilla</th><th>Unidad</th><th class="num">Importe</th><th>Cálculo</th></tr>';
+  let tot = 0;
+  for (const d of D){ tot += Number(d.importe); h += `<tr><td>${esc(d.nombre)}</td><td><span class="chip gray">${esc(d.categoria)}</span></td><td>${esc(uniNombre(d.unidad))}</td><td class="num">${plata(d.importe)}</td><td class="mini">${esc(d.calculo)}</td></tr>`; }
+  document.getElementById('m-dist').innerHTML = h + '</table>';
+  document.getElementById('m-stat').innerHTML = `Total repartido: <strong>${plata(tot)}</strong>`;
 }
-async function _asignar(p, imp, per, sub) {
-  const { error } = await sb.rpc('impuestos_asignar_pago', { p_mov_id: p.mov_id, p_impuesto: imp, p_periodo: per, p_subperiodo: sub || null });
-  if (error) { toast('No se pudo asignar: ' + error.message, 'error'); return false; }
-  return true;
+function fila(c, r, u){
+  const key = `${c.clave}|${u ? u.clave : ''}`;
+  const regla = {ventas:'por venta de cada local', sueldo_banco:`${c.porcentaje ?? '?'} % del sueldo banco`, unidad_fija:'todo a ' + uniNombre(c.unidad_fija), manual:'a mano por unidad'}[c.prorrateo];
+  return `<tr>
+    <td>${esc(c.nombre)}${u ? ` <span class="chip gray">${esc(u.nombre)}</span>` : ''}</td>
+    <td class="mini">${esc(regla)}</td>
+    <td class="num"><input type="number" step="0.01" id="imp-${key}" value="${r.importe ?? ''}" style="width:150px;text-align:right" placeholder="0"></td>
+    <td><input type="date" id="vto-${key}" value="${r.vencimiento || ''}"></td>
+    <td><input type="date" id="pag-${key}" value="${r.pagado_at || ''}"></td>
+    <td><button class="btn primary" onclick="guardarImp('${c.clave}', '${u ? u.clave : ''}', ${r.id || 'null'})">Guardar</button></td>
+  </tr>`;
 }
-async function aceptarPago(i) {
-  const p = PAGOS[i];
-  if (await _asignar(p, p.sug_impuesto, p.sug_periodo, p.sug_subperiodo)) { toast('Asignado', 'success'); await renderPagos(); }
-}
-async function aceptarTodas() {
-  const L = PAGOS.filter(p => !p.obligacion_id && !p.ignorado && sugCompleta(p));
-  if (!L.length) { toast('No hay sugerencias completas para aceptar', ''); return; }
-  if (!confirm(`¿Asignar ${L.length} pagos a la obligación sugerida? Después se puede cambiar uno por uno.`)) return;
-  let ok = 0;
-  for (const p of L) if (await _asignar(p, p.sug_impuesto, p.sug_periodo, p.sug_subperiodo)) ok++;
-  toast(`${ok} pagos asignados`, 'success'); await renderPagos();
-}
-async function asignarPago(i) {
-  const p = PAGOS[i];
-  const imp0 = p.sug_impuesto || 'iva', per0 = (p.sug_periodo || p.fecha.slice(0, 8) + '01').slice(0, 7);
-  abrirOv(`
-    <div class="ob-head"><div style="flex:1"><h3>Asignar pago de ${plata2(p.importe)}</h3>
-      <div class="mini">${fmtF(p.fecha)} · ${esc(p.cuenta)} · ${esc(p.nota || p.descripcion)}</div></div>${ib('cerrar', 'Cancelar', 'cerrarOv()')}</div>
-    <div class="form">
-      <label>Impuesto <select id="a-imp" onchange="sugerirSub()">${CAT.filter(k => k.activo).map(k => `<option value="${k.clave}" ${k.clave === imp0 ? 'selected' : ''}>${esc(k.nombre)}</option>`).join('')}</select></label>
-      <label>Período <input type="month" id="a-per" value="${per0}" onchange="sugerirSub()"></label>
-      <label>Detalle (1Q, 2Q, cuota…) <input id="a-sub" list="a-subs" value="${esc(p.sug_subperiodo || '')}" data-sin-miles><datalist id="a-subs"></datalist></label>
-    </div>
-    <div class="mini" style="margin-top:6px">Si la obligación ya existe (por ejemplo, con la DDJJ cargada), el pago se le agrega. Si no, se crea.</div>
-    <div class="ob-pie">${ib('cerrar', 'Cancelar', 'cerrarOv()')}${ib('guardar', 'Asignar', `confirmarAsignar(${i})`, 'main')}</div>`);
-  sugerirSub();
-}
-async function sugerirSub() {
-  const imp = document.getElementById('a-imp').value, per = document.getElementById('a-per').value;
-  if (!imp || !per) return;
-  const { data } = await sb.from('impuestos_calendario').select('subperiodo').eq('impuesto', imp).eq('periodo', per + '-01').not('subperiodo', 'is', null);
-  document.getElementById('a-subs').innerHTML = (data || []).map(x => `<option value="${esc(x.subperiodo)}">`).join('');
-}
-async function confirmarAsignar(i) {
-  const imp = document.getElementById('a-imp').value, per = document.getElementById('a-per').value, sub = txtOrNull('a-sub');
-  if (!imp || !per) { toast('Elegí impuesto y período', 'error'); return; }
-  if (await _asignar(PAGOS[i], imp, per + '-01', sub)) { toast('Asignado', 'success'); cerrarOv(); await renderPagos(); }
-}
-async function ignorarPago(i) {
-  const motivo = prompt('¿Por qué no es un impuesto de la SRL? (opcional, ej. "seguro", "sindicato")', '');
-  if (motivo === null) return;
-  const { error } = await sb.from('impuestos_pagos_ignorados').upsert({ mov_id: PAGOS[i].mov_id, motivo: motivo || null });
-  if (error) { toast('No se pudo: ' + error.message, 'error'); return; }
-  await renderPagos();
-}
-async function restaurarPago(i) {
-  const { error } = await sb.from('impuestos_pagos_ignorados').delete().eq('mov_id', PAGOS[i].mov_id);
-  if (error) { toast('No se pudo: ' + error.message, 'error'); return; }
-  await renderPagos();
+async function guardarImp(imp, uni, id){
+  const key = `${imp}|${uni}`;
+  const importe = Number(document.getElementById('imp-' + key).value || 0);
+  const vto = document.getElementById('vto-' + key).value || null;
+  const pag = document.getElementById('pag-' + key).value || null;
+  const row = { impuesto: imp, periodo: periodoSel(), importe, unidad: uni || null, vencimiento: vto, pagado_at: pag, es_prueba: MODO_PRUEBA, cargado_por: session.email };
+  const q = id ? sb.from('impuestos_mensual').update(row).eq('id', id) : sb.from('impuestos_mensual').insert(row);
+  const { error } = await q;
+  if (error){ toast('No se pudo guardar: ' + error.message, 'error'); return; }
+  toast('Guardado', 'success'); await renderMensual();
 }
 
-// ── CALENDARIO ────────────────────────────────────────────────────────────────────────────────
-async function renderCalendario() {
-  const a = Number(document.getElementById('c-anio').value);
-  const { data, error } = await sb.from('impuestos_calendario').select('*')
-    .or(`and(periodo.gte.${a}-01-01,periodo.lte.${a}-12-31),and(vencimiento.gte.${a}-01-01,vencimiento.lte.${a}-12-31)`)
-    .order('vencimiento');
-  if (error) { document.getElementById('c-lista').innerHTML = `<div class="empty">${esc(error.message)}</div>`; return; }
-  CAL = data || []; pintarCalendario();
-}
-function pintarCalendario() {
-  const f = document.getElementById('c-imp').value;
-  const orden = k => (CAT.find(c => c.clave === k) || {}).orden ?? 999;
-  const L = CAL.map((c, i) => ({ c, i })).filter(({ c }) => !f || c.impuesto === f)
-    .sort((a, b) => orden(a.c.impuesto) - orden(b.c.impuesto) || a.c.periodo.localeCompare(b.c.periodo) || (a.c.subperiodo || '').localeCompare(b.c.subperiodo || ''));
-  const ver = L.filter(x => x.c.verificado).length;
-  document.getElementById('c-stat').textContent = `${L.length} vencimientos · ${ver} con fecha oficial`;
-  if (!L.length) { document.getElementById('c-lista').innerHTML = '<div class="empty">No hay vencimientos cargados para este año.</div>'; return; }
-  let h = '<table><tr><th>Impuesto</th><th>Período</th><th>Vence</th><th title="Fecha confirmada con la norma o la agenda oficial">Oficial</th><th>Fuente</th><th></th></tr>';
-  for (const { c, i } of L) {
-    h += `<tr><td>${esc(nombreImp(c.impuesto))}</td><td>${perTxt(c.periodo, c.subperiodo)}</td>
-      <td><input type="date" value="${c.vencimiento}" onchange="guardarVto(${i}, {vencimiento: this.value})"></td>
-      <td><input type="checkbox" ${c.verificado ? 'checked' : ''} onchange="guardarVto(${i}, {verificado: this.checked})" title="Tildar cuando la fecha está confirmada en la agenda de ARCA o la norma"></td>
-      <td class="mini">${esc(c.fuente || '')}</td>
-      <td>${esAdmin ? ib('borrar', 'Borrar este vencimiento', `borrarVto(${i})`, 'warn') : ''}</td></tr>`;
+// ── Catálogo ──
+function renderCatalogo(){
+  let h = '<table><tr><th>Clave</th><th>Nombre</th><th>Categoría planilla</th><th>Reparto</th><th>Activo</th><th></th></tr>';
+  for (const c of CAT){
+    h += `<tr class="${c.activo ? '' : 'dim'}"><td><code>${esc(c.clave)}</code></td><td>${esc(c.nombre)}</td><td>${esc(c.categoria_gastos)}</td>
+      <td class="mini">${esc(c.prorrateo)}${c.porcentaje != null ? ' · ' + c.porcentaje + ' %' : ''}${c.unidad_fija ? ' · ' + uniNombre(c.unidad_fija) : ''}${c.unidades_incluidas ? ' · ' + c.unidades_incluidas.join(', ') : ''}</td>
+      <td>${c.activo ? '✓' : '—'}</td><td>${esadmin() ? `<button class="btn" onclick="editarImpuesto('${c.clave}')">✏️</button>` : ''}</td></tr>`;
   }
   document.getElementById('c-lista').innerHTML = h + '</table>';
 }
-async function guardarVto(i, cambios) {
-  const c = CAL[i];
-  if (cambios.vencimiento === '') { toast('La fecha no puede quedar vacía', 'error'); pintarCalendario(); return; }
-  if ('vencimiento' in cambios) cambios.fuente = 'Cambiado a mano por ' + session.email + ' el ' + fmtF(hoyAR());
-  const { error } = await sb.from('impuestos_calendario').update({ ...cambios, actualizado_at: new Date().toISOString() }).eq('id', c.id);
-  if (error) { toast('No se pudo guardar: ' + error.message, 'error'); return; }
-  Object.assign(c, cambios); pintarCalendario(); toast('Guardado', 'success');
-}
-async function borrarVto(i) {
-  const c = CAL[i];
-  if (!confirm(`¿Borrar el vencimiento de ${nombreImp(c.impuesto)} ${perTxt(c.periodo, c.subperiodo)}?`)) return;
-  const { error } = await sb.from('impuestos_calendario').delete().eq('id', c.id);
-  if (error) { toast('No se pudo borrar: ' + error.message, 'error'); return; }
-  await renderCalendario();
-}
-function nuevoVencimiento() {
-  const hoy = hoyAR();
-  abrirOv(`
-    <div class="ob-head"><div style="flex:1"><h3>Nuevo vencimiento</h3></div>${ib('cerrar', 'Cancelar', 'cerrarOv()')}</div>
-    <div class="form">
-      <label>Impuesto <select id="v-imp">${CAT.filter(k => k.activo).map(k => `<option value="${k.clave}">${esc(k.nombre)}</option>`).join('')}</select></label>
-      <label>Período <input type="month" id="v-per" value="${hoy.slice(0, 7)}"></label>
-      <label>Detalle (1Q, cuota…) <input id="v-sub" placeholder="opcional" data-sin-miles></label>
-      <label>Vence <input type="date" id="v-vto"></label>
-      <label>Fuente <input id="v-fte" placeholder="ej. agenda ARCA"></label>
-      <label><span>Fecha oficial</span><input type="checkbox" id="v-ver"></label>
-    </div>
-    <div class="ob-pie">${ib('cerrar', 'Cancelar', 'cerrarOv()')}${ib('guardar', 'Guardar', 'guardarNuevoVto()', 'main')}</div>`);
-}
-async function guardarNuevoVto() {
-  const per = document.getElementById('v-per').value, vto = document.getElementById('v-vto').value;
-  if (!per || !vto) { toast('Período y fecha son obligatorios', 'error'); return; }
-  const row = { impuesto: document.getElementById('v-imp').value, periodo: per + '-01', subperiodo: txtOrNull('v-sub'), vencimiento: vto,
-    fuente: txtOrNull('v-fte') || 'Cargado a mano por ' + session.email, verificado: document.getElementById('v-ver').checked };
-  const { error } = await sb.from('impuestos_calendario').insert(row);
-  if (error) { toast('No se pudo guardar: ' + (/calendario_uk/.test(error.message) ? 'ya hay un vencimiento para ese impuesto y período' : error.message), 'error'); return; }
-  toast('Guardado', 'success'); cerrarOv(); await renderCalendario();
-}
-
-// ── REPARTO A GASTOS ───────────────────────────────────────────────────────────────────────────
-const periodoReparto = () => `${document.getElementById('r-anio').value}-${String(document.getElementById('r-mes').value).padStart(2, '0')}-01`;
-async function renderReparto() {
-  const per = periodoReparto();
-  const { data: dist, error } = await sb.rpc('impuestos_distribuir', { p_periodo: per, p_prueba: false });
-  if (error) { document.getElementById('r-dist').innerHTML = `<div class="empty">${esc(error.message)}</div>`; return; }
-  const D = dist || [];
-  if (!D.length) { document.getElementById('r-dist').innerHTML = '<div class="empty">Nada para repartir en este mes.</div>'; document.getElementById('r-stat').textContent = ''; }
-  else {
-    let h = '<table><tr><th>Impuesto</th><th>Categoría en la planilla</th><th>Unidad</th><th class="num">Importe</th><th>Cálculo</th></tr>';
-    for (const d of D) h += `<tr><td>${esc(d.nombre)}</td><td><span class="chip gray">${esc(d.categoria)}</span></td><td>${esc(uniNombre(d.unidad))}</td><td class="num">${plata(d.importe)}</td><td class="mini">${esc(d.calculo)}</td></tr>`;
-    document.getElementById('r-dist').innerHTML = h + '</table>';
-    document.getElementById('r-stat').innerHTML = `Total repartido: <strong>${plata(sumar(D, d => d.importe))}</strong>`;
-  }
-  const man = CAT.filter(k => k.activo && k.prorrateo === 'manual');
-  document.getElementById('r-manual-card').style.display = man.length ? '' : 'none';
-  if (!man.length) return;
-  const { data: rows } = await sb.from('impuestos_mensual').select('*').eq('periodo', per).eq('es_prueba', false).not('unidad', 'is', null);
-  let h = '<table><tr><th>Impuesto</th><th>Unidad</th><th class="num">Importe</th><th></th></tr>';
-  for (const k of man) for (const u of UNIDADES) {
-    const r = (rows || []).find(x => x.impuesto === k.clave && x.unidad === u.clave) || {};
-    h += `<tr><td>${esc(k.nombre)}</td><td>${esc(u.nombre)}</td><td class="num"><input type="number" step="0.01" id="man-${k.clave}-${u.clave}" value="${r.importe ?? ''}" style="width:150px;text-align:right"></td>
-      <td>${ib('guardar', 'Guardar', `guardarManual('${k.clave}','${u.clave}',${r.id || 'null'})`)}</td></tr>`;
-  }
-  document.getElementById('r-manual').innerHTML = h + '</table>';
-}
-async function guardarManual(imp, uni, id) {
-  const importe = numOrNull(`man-${imp}-${uni}`);
-  const row = { impuesto: imp, periodo: periodoReparto(), unidad: uni, importe, es_prueba: false, origen: 'manual', cargado_por: session.email };
-  const { error } = id ? await sb.from('impuestos_mensual').update({ importe }).eq('id', id) : await sb.from('impuestos_mensual').insert(row);
-  if (error) { toast('No se pudo guardar: ' + error.message, 'error'); return; }
-  toast('Guardado', 'success'); renderReparto();
-}
-
-// ── CATÁLOGO ─────────────────────────────────────────────────────────────────────────────────
-const REPARTO_TXT = c => ({ ventas: 'por venta de cada local', sueldo_banco: `${c.porcentaje ?? '?'} % del sueldo banco`, unidad_fija: 'todo a ' + uniNombre(c.unidad_fija), manual: 'a mano por unidad', no_va: 'no va a Gastos' }[c.prorrateo] || c.prorrateo);
-function renderCatalogo() {
-  let h = '<table><tr><th>Impuesto</th><th>Organismo</th><th>Frecuencia</th><th>Presenta</th><th>Planilla de Gastos</th><th>Activo</th><th></th></tr>';
-  for (const c of CAT) {
-    h += `<tr class="${c.activo ? '' : 'dim'}"><td><b>${esc(c.nombre)}</b>${c.formulario ? ` <span class="mini">${esc(c.formulario)}</span>` : ''}${c.notas ? `<div class="mini">${esc(c.notas)}</div>` : ''}</td>
-      <td>${esc(ORG[c.organismo] || c.organismo)}</td><td>${esc(FREC[c.frecuencia] || c.frecuencia)}</td>
-      <td class="mini">${esc({ estudio: 'el estudio', banco: 'lo retiene el banco', nosotros: 'administración' }[c.quien_presenta] || '')}${c.rol === 'agente' ? ' · como agente' : c.rol === 'terceros' ? ' · por terceros' : ''}</td>
-      <td class="mini">${esc(REPARTO_TXT(c))}${c.categoria_gastos ? ' · ' + esc(c.categoria_gastos) : ''}</td>
-      <td>${c.activo ? '✓' : '—'}</td><td>${esAdmin ? ib('editar', 'Editar', `formImpuesto('${c.clave}')`) : ''}</td></tr>`;
-  }
-  document.getElementById('k-lista').innerHTML = h + '</table>';
-  document.getElementById('k-nuevo').innerHTML = esAdmin ? ib('mas', 'Nuevo impuesto', "formImpuesto('')") : '';
-}
-function formImpuesto(clave) {
-  const c = CAT.find(x => x.clave === clave) || {};
-  const f = document.getElementById('k-form'); f.style.display = 'block';
-  const sel = (id, opts, v) => `<select id="${id}">${Object.entries(opts).map(([k, t]) => `<option value="${k}" ${v === k ? 'selected' : ''}>${esc(t)}</option>`).join('')}</select>`;
-  const cats = { '': '—', sueldos: 'sueldos', alquiler: 'alquiler', expensas: 'expensas', servicios: 'servicios', tarjetas: 'tarjetas', iibb: 'iibb', varios: 'varios' };
+const esadmin = () => esAdmin;
+function nuevoImpuesto(){ formImpuesto({}); }
+function editarImpuesto(k){ formImpuesto(CAT.find(c => c.clave === k) || {}); }
+function formImpuesto(c){
+  const f = document.getElementById('c-form'); f.style.display = 'block';
+  const cats = ['sueldos','alquiler','expensas','servicios','tarjetas','iibb','varios'];
   f.innerHTML = `<div class="form">
-    <label>Clave <input id="f-clave" value="${esc(c.clave || '')}" ${c.clave ? 'readonly' : ''} placeholder="ej. tasa_tigre" data-sin-miles></label>
+    <label>Clave <input id="f-clave" value="${esc(c.clave || '')}" ${c.clave ? 'readonly' : ''} placeholder="iibb"></label>
     <label>Nombre <input id="f-nombre" value="${esc(c.nombre || '')}"></label>
-    <label>Organismo ${sel('f-org', ORG, c.organismo || 'arca')}</label>
-    <label>Frecuencia ${sel('f-frec', FREC, c.frecuencia || 'mensual')}</label>
-    <label>Formulario <input id="f-form" value="${esc(c.formulario || '')}" placeholder="F.2002, CM03…"></label>
-    <label>Quién lo presenta ${sel('f-quien', { estudio: 'el estudio', banco: 'lo retiene el banco', nosotros: 'administración' }, c.quien_presenta || 'estudio')}</label>
-    <label>Rol ${sel('f-rol', { contribuyente: 'contribuyente', agente: 'agente de retención', terceros: 'por cuenta de terceros' }, c.rol || 'contribuyente')}</label>
-    <label>Planilla de Gastos ${sel('f-pro', { no_va: 'no va', ventas: 'por venta de cada local', sueldo_banco: '% del sueldo banco', unidad_fija: 'todo a una unidad', manual: 'a mano por unidad' }, c.prorrateo || 'no_va')}</label>
-    <label>Categoría en la planilla ${sel('f-cat', cats, c.categoria_gastos || '')}</label>
-    <label>% (sueldo banco) <input id="f-pct" type="number" step="0.01" value="${c.porcentaje ?? ''}" data-sin-miles></label>
-    <label>Unidad fija <select id="f-uf"><option value="">—</option>${UNIDADES.map(u => `<option value="${u.clave}" ${c.unidad_fija === u.clave ? 'selected' : ''}>${esc(u.nombre)}</option>`).join('')}</select></label>
-    <label>Solo estas unidades <input id="f-inc" value="${(c.unidades_incluidas || []).join(', ')}" placeholder="vacío = todas"></label>
+    <label>Categoría en la planilla <select id="f-cat">${cats.map(x => `<option ${c.categoria_gastos === x ? 'selected' : ''}>${x}</option>`).join('')}</select></label>
+    <label>Reparto <select id="f-pro" onchange="document.getElementById('f-pct').disabled = this.value !== 'sueldo_banco'; document.getElementById('f-uf').disabled = this.value !== 'unidad_fija'">
+      ${['ventas','sueldo_banco','unidad_fija','manual'].map(x => `<option ${c.prorrateo === x ? 'selected' : ''}>${x}</option>`).join('')}</select></label>
+    <label>% (sueldo banco) <input id="f-pct" type="number" step="0.01" value="${c.porcentaje ?? ''}" ${c.prorrateo === 'sueldo_banco' ? '' : 'disabled'}></label>
+    <label>Unidad fija <select id="f-uf" ${c.prorrateo === 'unidad_fija' ? '' : 'disabled'}><option value="">—</option>${UNIDADES.map(u => `<option value="${u.clave}" ${c.unidad_fija === u.clave ? 'selected' : ''}>${esc(u.nombre)}</option>`).join('')}</select></label>
+    <label>Solo estas unidades <input id="f-inc" value="${(c.unidades_incluidas || []).join(', ')}" placeholder="vacío = todas · ej: alcorta, unicenter"></label>
     <label>Orden <input id="f-orden" type="number" value="${c.orden ?? 99}"></label>
     <label><span>Activo</span><input id="f-activo" type="checkbox" ${c.activo !== false ? 'checked' : ''}></label>
     <label style="grid-column:1/-1">Notas <input id="f-notas" value="${esc(c.notas || '')}"></label>
   </div>
-  <div class="ob-pie">${ib('cerrar', 'Cancelar', "document.getElementById('k-form').style.display='none'")}${ib('guardar', 'Guardar', 'guardarImpuesto()', 'main')}</div>`;
-  f.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  <div style="margin-top:8px;display:flex;gap:8px"><button class="btn primary" onclick="guardarImpuesto()">Guardar</button><button class="btn" onclick="document.getElementById('c-form').style.display='none'">Cancelar</button></div>`;
 }
-async function guardarImpuesto() {
+async function guardarImpuesto(){
   const g = id => document.getElementById(id);
   const inc = g('f-inc').value.split(',').map(s => s.trim()).filter(Boolean);
-  const row = { clave: g('f-clave').value.trim().toLowerCase(), nombre: g('f-nombre').value.trim(), organismo: g('f-org').value, frecuencia: g('f-frec').value,
-    formulario: g('f-form').value.trim() || null, quien_presenta: g('f-quien').value, rol: g('f-rol').value,
-    prorrateo: g('f-pro').value, categoria_gastos: g('f-cat').value || null,
+  const row = { clave: g('f-clave').value.trim().toLowerCase(), nombre: g('f-nombre').value.trim(), categoria_gastos: g('f-cat').value, prorrateo: g('f-pro').value,
     porcentaje: g('f-pct').value === '' ? null : Number(g('f-pct').value), unidad_fija: g('f-uf').value || null, unidades_incluidas: inc.length ? inc : null,
     orden: Number(g('f-orden').value || 99), activo: g('f-activo').checked, notas: g('f-notas').value || null };
-  if (!row.clave || !row.nombre) { toast('Clave y nombre son obligatorios', 'error'); return; }
-  if (row.prorrateo !== 'no_va' && !row.categoria_gastos) { toast('Si va a la planilla de Gastos, elegí la categoría', 'error'); return; }
-  if (row.prorrateo === 'unidad_fija' && !row.unidad_fija) { toast('Elegí la unidad', 'error'); return; }
+  if (!row.clave || !row.nombre){ toast('Clave y nombre son obligatorios', 'error'); return; }
   const { error } = await sb.from('impuestos_catalogo').upsert(row, { onConflict: 'clave' });
-  if (error) { toast('No se pudo guardar: ' + error.message, 'error'); return; }
-  toast('Guardado', 'success'); g('k-form').style.display = 'none';
-  const { data } = await sb.from('impuestos_catalogo').select('*').order('orden'); CAT = data || []; renderCatalogo();
+  if (error){ toast('No se pudo guardar: ' + error.message, 'error'); return; }
+  toast('Guardado', 'success'); document.getElementById('c-form').style.display = 'none';
+  const { data } = await sb.from('impuestos_catalogo').select('*').order('orden'); CAT = data || []; renderCatalogo(); await renderMensual();
+}
+
+// ── Vencimientos ──
+async function renderVencimientos(){
+  const { data } = await sb.from('impuestos_mensual').select('*').eq('es_prueba', MODO_PRUEBA).not('vencimiento', 'is', null).order('vencimiento', { ascending: false }).limit(200);
+  const R = data || [];
+  if (!R.length){ document.getElementById('v-lista').innerHTML = '<div class="empty">Todavía no hay vencimientos cargados.</div>'; return; }
+  const hoy = hoyAR();
+  let h = '<table><tr><th>Impuesto</th><th>Período</th><th class="num">Importe</th><th>Vence</th><th>Estado</th></tr>';
+  for (const r of R){
+    const c = CAT.find(x => x.clave === r.impuesto) || {};
+    const est = r.pagado_at ? `<span class="chip green">Pagado ${r.pagado_at}</span>` : (r.vencimiento < hoy ? '<span class="chip red">Vencido</span>' : '<span class="chip amber">Pendiente</span>');
+    h += `<tr><td>${esc(c.nombre || r.impuesto)}${r.unidad ? ' · ' + esc(uniNombre(r.unidad)) : ''}</td><td>${MESES[Number(r.periodo.slice(5,7))-1]} ${r.periodo.slice(0,4)}</td><td class="num">${plata(r.importe)}</td><td>${r.vencimiento}</td><td>${est}</td></tr>`;
+  }
+  document.getElementById('v-lista').innerHTML = h + '</table>';
 }
 
 </script>
-<script src="manual.js?v=5"></script>
+<script src="manual.js?v=4"></script>
 </body>
 </html>
