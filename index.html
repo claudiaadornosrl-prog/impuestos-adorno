@@ -1055,6 +1055,8 @@ async function subirArchivo(tipo, input) {
   document.getElementById('arch-' + tipo).innerHTML = `<a href="#" onclick="verArchivo('${esc(path)}');return false">${esc(f.name)}</a> <span class="mini">(se guarda al tocar Guardar)</span>`;
 }
 async function verArchivo(path) {
+  // "onedrive:..." = archivo que ya estaba en OneDrive (VEP y F.931 de la carpeta de Marisa): se abre ahí, no en el bucket
+  if (String(path).startsWith('onedrive:')) { window.open(_oneDriveUrl(path.slice(9)), '_blank', 'noopener'); return; }
   const { data, error } = await sb.storage.from('impuestos').createSignedUrl(path, 600);
   if (error || !data) { toast('No se pudo abrir el archivo: ' + (error?.message || ''), 'error'); return; }
   window.open(data.signedUrl, '_blank', 'noopener');
