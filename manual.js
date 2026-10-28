@@ -16,35 +16,70 @@ function _manualSecciones() {
       pasos: [
         'En el Hub, con el ícono 👤, ingresás con tu usuario y podés tildar "Confiar en esta computadora": después entrás a todos los módulos sin volver a escribir la clave.',
         'Al salir de cualquier módulo se cierra la sesión en todos.',
+        'Impuestos trabaja siempre con los datos reales (no tiene modo de prueba).',
       ],
     },
     {
-      icon: '📅', titulo: 'Mensual · cargar lo que informa el estudio',
-      desc: 'Un importe por impuesto y por mes. El módulo lo reparte por unidad con la regla de cada impuesto, y la planilla de Gastos lo levanta de acá.',
+      icon: '🗂', titulo: 'Tablero · todos los impuestos del año',
+      desc: 'Una fila por impuesto y una columna por mes. Cada cuadrito es una obligación: el impuesto de ese período, con su vencimiento, su DDJJ, su VEP y su pago.',
       pasos: [
-        'Elegí mes y año. Por cada impuesto hay un renglón: importe del mes, vencimiento y fecha de pago (opcionales). Guardar es por renglón.',
-        'Ingresos Brutos se reparte por la venta de cada local del mes (misma fórmula que tenía la planilla: importe × venta del local / total ventas).',
-        'Cargas sociales NO se cargan: salen solas como el 55 % del sueldo banco de cada unidad (Colaboradores). Si el estudio informa otro %, se cambia en 📇 Impuestos.',
-        'Impuesto al débito y al crédito van enteros a Administración.',
-        'Abajo, "Cómo queda repartido" muestra el resultado unidad por unidad con el cálculo al lado. Es exactamente lo que va a ver la planilla de Gastos.',
-        'En modo 🧪 prueba (franja amarilla) los importes se guardan aparte y no mezclan con los reales.',
+        'Colores: verde = pagada · azul = VEP listo · violeta = DDJJ presentada · blanco punteado = a presentar · amarillo = vence en los próximos 10 días · rojo = venció y no hay pago registrado · gris = sin movimiento o no corresponde.',
+        'Arriba están los totales: lo pagado en el año, lo que falta pagar (si ya tiene importe), cuántas vencieron sin pago registrado y el próximo vencimiento.',
+        '"Ver por Período" pone cada impuesto en el mes al que corresponde (el IVA de septiembre va en septiembre). "Ver por Vencimiento" lo pone en el mes en que vence o se pagó (el IVA de septiembre va en octubre). Las columnas del año anterior o siguiente aparecen solas cuando hace falta.',
+        'Una obligación en rojo no siempre está impaga: puede estar pagada y el pago todavía no se asignó. Antes de preocuparte, mirá la pestaña Pagos.',
+        'El botón ⊕ agrega una obligación que no está en el calendario (un despacho de aduana, un plan de pagos). El botón de flechas vuelve a sumar los débitos y créditos bancarios desde Tesorería.',
+        'La fila "Pagado en el mes" suma lo pagado de cada columna.',
       ],
     },
     {
-      icon: '📇', titulo: 'Impuestos · el catálogo y su regla',
-      desc: 'Solo el admin. Cada impuesto dice a qué categoría de la planilla va y cómo se reparte.',
+      icon: '🧾', titulo: 'Cargar la DDJJ, el VEP y el pago',
+      desc: 'Tocás el cuadrito de la obligación y se abre su ficha con tres partes. Se cierra con ✕, Cancelar o Escape.',
       pasos: [
-        'Reparto "ventas": proporcional a la venta de cada local. "sueldo_banco": un % del sueldo banco de cada unidad. "unidad_fija": todo a una. "manual": se carga un importe por unidad en 📅 Mensual.',
-        '"Solo estas unidades" limita el reparto (ej. alcorta, unicenter). Vacío = todas.',
-        'Desactivar un impuesto lo saca del reparto de los meses siguientes; los ya cargados quedan.',
+        'Declaración jurada: impuesto determinado (lo que dice la DDJJ), saldo a favor que queda, fecha de presentación, número de transacción y el PDF de la DDJJ que manda el estudio (botón de subir).',
+        'VEP: número, importe a pagar, vencimiento del VEP y el PDF del VEP.',
+        'Pago: fecha, importe pagado y comprobante. Si el pago vino de Tesorería, lo dice y se puede desvincular.',
+        'El estado se calcula solo: con fecha de pago queda Pagada; con VEP, VEP listo; con DDJJ, Presentada. "Marcar como" sirve para Sin movimiento (DDJJ en cero) o No corresponde.',
+        'Para Ingresos Brutos, el impuesto determinado es lo que se reparte a la planilla de Gastos por la venta de cada local.',
+        'Los archivos quedan guardados en el sistema (privados, solo para quienes usan Impuestos). Para verlos, tocás el nombre.',
       ],
     },
     {
-      icon: '🧾', titulo: 'Vencimientos',
-      desc: 'Lista de todo lo que tiene vencimiento cargado, con su estado.',
+      icon: '💳', titulo: 'Pagos · lo que salió del banco',
+      desc: 'Todos los pagos a ARCA, AGIP y ARBA que aparecen en Tesorería (Galicia y Mercado Pago), para asignarlos a su obligación.',
       pasos: [
-        'Pendiente, Vencido (pasó la fecha sin fecha de pago) o Pagado. Se completan desde 📅 Mensual.',
-        'Preparado para que más adelante se suban los VEPs del estudio y se controle contra lo pagado.',
+        'El número de la pestaña es cuántos pagos faltan asignar en las fechas elegidas.',
+        'La sugerencia sale de la nota que dejó administración en Tesorería (por ejemplo "IVA 5-2026" o "2Q Retenciones Ganancias 7-2026"). Con el ✓ la aceptás; con el lápiz la elegís a mano; con el doble tilde de arriba aceptás todas las sugerencias completas.',
+        'Si un pago cubre dos impuestos en un mismo VEP (por ejemplo cargas sociales y retenciones), asignalo al principal y anotá el resto en las notas de la obligación.',
+        'Lo que no es un impuesto de la SRL (seguros, sindicato, transferencias a proveedores) se marca como ignorado con el círculo tachado. Se puede volver a mostrar desde "Mostrar: Ignorados".',
+        'Los débitos y créditos bancarios (Ley 25.413) no aparecen acá: se suman solos por mes y quedan pagados en el Tablero.',
+        'Para que la sugerencia funcione, conviene que en Tesorería la nota del pago diga el impuesto y el período (ej. "IVA 9-2026", "Anticipo Ganancias 2026 cuota 5").',
+      ],
+    },
+    {
+      icon: '📅', titulo: 'Calendario de vencimientos',
+      desc: 'Las fechas de vencimiento de cada impuesto para nuestro CUIT (terminado en 0).',
+      pasos: [
+        'Las fechas con ✓ salen de la norma oficial (por ejemplo Ingresos Brutos, de la resolución de la Comisión Arbitral). Las demás son estimadas por la regla de cada impuesto: conviene confirmarlas en la agenda de vencimientos de ARCA y tildar ✓.',
+        'Cambiar una fecha acá cambia el vencimiento de las obligaciones que no tienen uno propio.',
+        'El botón ⊕ agrega un vencimiento (por ejemplo los de 2027 cuando salgan, o una prórroga).',
+      ],
+    },
+    {
+      icon: '🥧', titulo: 'Reparto a Gastos',
+      desc: 'Muestra, mes por mes, qué parte de los impuestos va a cada unidad en la planilla de Gastos.',
+      pasos: [
+        'Solo van los impuestos que son gasto: Ingresos Brutos (por la venta de cada local), cargas sociales (55 % del sueldo banco de cada unidad) y débitos y créditos bancarios (todo a Administración).',
+        'IVA, Ganancias, anticipos y retenciones no son gasto y no se reparten.',
+        'Si algún impuesto se configura "a mano por unidad", acá aparece para cargar el importe de cada unidad.',
+      ],
+    },
+    {
+      icon: '📇', titulo: 'Impuestos · el catálogo',
+      desc: 'Solo el admin. Cada impuesto dice qué organismo lo cobra, cada cuánto vence, quién lo presenta y si va a la planilla de Gastos.',
+      pasos: [
+        'Planilla de Gastos: "no va", "por venta de cada local", "% del sueldo banco", "todo a una unidad" o "a mano por unidad". Si va, hay que elegir la categoría de la planilla.',
+        'Rol: contribuyente (lo pagamos nosotros), agente de retención (lo retenemos a otros, como las retenciones de Ganancias) o por cuenta de terceros (Bienes Personales de los socios).',
+        'Desactivar un impuesto lo saca del Tablero y del reparto; lo cargado queda guardado.',
       ],
     },
   ];
@@ -60,7 +95,7 @@ function abrirManual() {
       <div class="m-head">
         <span style="font-size:22px;">📖</span>
         <div style="flex:1;">
-          <div style="font-weight:700;font-size:16px;">Manual · Documentos</div>
+          <div style="font-weight:700;font-size:16px;">Manual · Impuestos</div>
           <div style="font-size:12px;opacity:.85;">Guía rápida de cada herramienta del módulo</div>
         </div>
         <button class="m-close" onclick="cerrarManual()">✕</button>
@@ -100,12 +135,12 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarManual
     #manual-overlay .m-foot{margin:16px 14px 12px;background:#fef3c7;border-left:4px solid #d97706;border-radius:8px;padding:11px 14px;font-size:12.5px;color:#92400e;}`;
   document.head.appendChild(css);
 
-  const nav = document.querySelector('nav.tabs');
-  if (nav) {
-    const b = document.createElement('button');
-    b.textContent = '📖 Manual';
-    b.onclick = () => abrirManual();
-    nav.appendChild(b);
+  // Botón del manual en la cabecera, solo ícono (regla de diseño JP 21-oct-2026)
+  const hr = document.querySelector('header .header-right');
+  if (hr && !document.getElementById('btn-manual')) {
+    const b = document.createElement('button'); b.id = 'btn-manual'; b.className = 'hbtn'; b.title = 'Manual de uso'; b.setAttribute('aria-label', 'Manual');
+    b.innerHTML = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span class="lb">Manual</span>';
+    b.onclick = () => abrirManual(); hr.insertBefore(b, hr.querySelector('.hsep'));
   }
 })();
 
