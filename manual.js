@@ -23,7 +23,7 @@ function _manualSecciones() {
       icon: '🗂', titulo: 'Tablero · todos los impuestos del año',
       desc: 'Una fila por impuesto y una columna por mes. Cada cuadrito es una obligación: el impuesto de ese período, con su vencimiento, su DDJJ, su VEP y su pago.',
       pasos: [
-        'Colores: verde = pagada · azul = VEP listo · violeta = DDJJ presentada · blanco punteado = a presentar · amarillo = vence en los próximos 10 días · rojo = venció y no hay pago registrado · gris = sin movimiento o no corresponde.',
+        'Colores: verde = pagada · verde punteado = compensada con saldo a favor (no salió plata) · azul = VEP listo · violeta = DDJJ presentada · blanco punteado = a presentar · amarillo = vence en los próximos 10 días · rojo = venció y no hay pago registrado · gris = sin movimiento o no corresponde.',
         'Arriba están los totales: lo pagado en el año, lo que falta pagar (si ya tiene importe), cuántas vencieron sin pago registrado y el próximo vencimiento.',
         '"Ver por Período" pone cada impuesto en el mes al que corresponde (el IVA de septiembre va en septiembre). "Ver por Vencimiento" lo pone en el mes en que vence o se pagó (el IVA de septiembre va en octubre). Las columnas del año anterior o siguiente aparecen solas cuando hace falta.',
         'Una obligación en rojo no siempre está impaga: puede estar pagada y el pago todavía no se asignó. Antes de preocuparte, mirá la pestaña Pagos.',
@@ -38,7 +38,8 @@ function _manualSecciones() {
         'Declaración jurada: impuesto determinado (lo que dice la DDJJ), saldo a favor que queda, fecha de presentación, número de transacción y el PDF de la DDJJ que manda el estudio (botón de subir).',
         'VEP: número, importe a pagar, vencimiento del VEP y el PDF del VEP.',
         'Pago: fecha, importe pagado y comprobante. Si el pago vino de Tesorería, lo dice y se puede desvincular.',
-        'El estado se calcula solo: con fecha de pago queda Pagada; con VEP, VEP listo; con DDJJ, Presentada. "Marcar como" sirve para Sin movimiento (DDJJ en cero) o No corresponde.',
+        'El estado se calcula solo: con fecha de pago queda Pagada; con VEP, VEP listo; con DDJJ, Presentada. "Marcar como" sirve para Sin movimiento (DDJJ en cero), No corresponde o Compensada (se canceló con un saldo a favor, como el IVA 3-2026 y el anticipo 1 contra el saldo de Ganancias 2025).',
+        'Si la obligación vino de la carpeta del estudio (DOCUMENTOS/CONTADOR), abajo de la DDJJ aparece el archivo de respaldo: se abre en OneDrive. Por ejemplo, el listado de retenciones de cada quincena.',
         'Para Ingresos Brutos, el impuesto determinado es lo que se reparte a la planilla de Gastos por la venta de cada local.',
         'Los archivos quedan guardados en el sistema (privados, solo para quienes usan Impuestos). Para verlos, tocás el nombre.',
       ],
@@ -49,7 +50,8 @@ function _manualSecciones() {
       pasos: [
         'El número de la pestaña es cuántos pagos faltan asignar en las fechas elegidas.',
         'La sugerencia sale de la nota que dejó administración en Tesorería (por ejemplo "IVA 5-2026" o "2Q Retenciones Ganancias 7-2026"). Con el ✓ la aceptás; con el lápiz la elegís a mano; con el doble tilde de arriba aceptás todas las sugerencias completas.',
-        'Si un pago cubre dos impuestos en un mismo VEP (por ejemplo cargas sociales y retenciones), asignalo al principal y anotá el resto en las notas de la obligación.',
+        'Si un VEP pagó dos cosas (por ejemplo cargas sociales y la 2Q de retenciones), con el lápiz asignás una parte poniendo el importe, y el resto queda en la lista para asignarlo a la otra.',
+        'Cuando la nota no dice nada, el sistema busca una obligación con el mismo importe que vence cerca de la fecha del pago ("Coincide el importe con…"). Funciona muy bien con las retenciones de Ganancias, porque el total de cada quincena ya está cargado.',
         'Lo que no es un impuesto de la SRL (seguros, sindicato, transferencias a proveedores) se marca como ignorado con el círculo tachado. Se puede volver a mostrar desde "Mostrar: Ignorados".',
         'Los débitos y créditos bancarios (Ley 25.413) no aparecen acá: se suman solos por mes y quedan pagados en el Tablero.',
         'Para que la sugerencia funcione, conviene que en Tesorería la nota del pago diga el impuesto y el período (ej. "IVA 9-2026", "Anticipo Ganancias 2026 cuota 5").',

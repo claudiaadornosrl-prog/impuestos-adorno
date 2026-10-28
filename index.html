@@ -563,6 +563,7 @@ table.grilla th.otro, table.grilla td.otro { background: #fafafa; }
 .ob.pend.cerca { background: var(--amber-bg); color: #92400e; border: 1px solid #fcd34d; }
 .ob.venc { background: var(--red-bg); color: #991b1b; }
 .ob.nada { background: var(--gray-light); color: var(--muted); }
+.ob.comp { background: #ecfdf5; color: #047857; border: 1px dashed #6ee7b7; }
 .ob:hover { filter: brightness(.96); border-color: rgba(0,0,0,.15); }
 .leyenda { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 2px 0; font-size: 12px; color: var(--muted); align-items: center; }
 .leyenda .ob { display: inline-block; width: auto; padding: 2px 8px; cursor: default; }
@@ -784,6 +785,7 @@ const EST = {
   pagada: { t: 'Pagada', c: 'ok' }, con_vep: { t: 'VEP listo', c: 'vep' }, presentada: { t: 'Presentada', c: 'pres' },
   a_presentar: { t: 'A presentar', c: 'pend' }, sin_movimiento: { t: 'Sin movimiento', c: 'nada' },
   no_corresponde: { t: 'No corresponde', c: 'nada' }, vencida: { t: 'Vencida sin pago registrado', c: 'venc' },
+  compensada: { t: 'Compensada con saldo a favor', c: 'comp' },
 };
 const ICO = {
   guardar: '<svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>',
@@ -816,7 +818,9 @@ const sumar = (arr, f) => arr.reduce((s, x) => s + (Number(f(x)) || 0), 0);
 const addDias = (d, n) => { const x = new Date(d + 'T12:00:00'); x.setDate(x.getDate() + n); return x.toISOString().slice(0, 10); };
 const numOrNull = id => { const v = document.getElementById(id).value; return v === '' || v == null ? null : Number(v); };
 const txtOrNull = id => { const v = (document.getElementById(id).value || '').trim(); return v === '' ? null : v; };
-const subCorto = s => !s ? '' : s.replace(/^Anticipo (\d+) · \d+$/, 'A$1').replace(/^cuota (\d+) · \d+$/, 'C$1').replace(/^pago /, '').replace(' anual', '');
+const ONEDRIVE_BASE = 'https://claudiaadorno-my.sharepoint.com/personal/office_claudiaadorno_onmicrosoft_com/Documents/';  // igual que Compras y Gastos
+const _oneDriveUrl = p => /^https?:\/\//i.test(p) ? p : ONEDRIVE_BASE + String(p).split('/').map(encodeURIComponent).join('/');
+const subCorto = s => !s ? '' : s.replace(/^Anticipo (\d+) · \d+$/, 'A$1').replace(/^cuota (\d+) · \d+$/, 'C$1').replace(/^Anticipo personal (\d+) · \d+$/, 'P$1').replace(/^pago /, '').replace(' anual', '');
 
 async function init() {
   // Impuestos trabaja con datos reales: la franja de prueba no aplica.
@@ -839,7 +843,7 @@ async function init() {
   document.getElementById('c-acciones').innerHTML = ib('mas', 'Agregar un vencimiento', 'nuevoVencimiento()');
   document.getElementById('c-imp').innerHTML = '<option value="">Todos</option>' + CAT.filter(k => k.activo).map(k => `<option value="${k.clave}">${esc(k.nombre)}</option>`).join('');
   document.getElementById('t-leyenda').innerHTML = 'Referencias: ' +
-    ['pagada', 'con_vep', 'presentada', 'a_presentar', 'vencida', 'sin_movimiento'].map(e => `<span class="ob ${EST[e].c}">${EST[e].t}</span>`).join('') +
+    ['pagada', 'compensada', 'con_vep', 'presentada', 'a_presentar', 'vencida', 'sin_movimiento'].map(e => `<span class="ob ${EST[e].c}">${EST[e].t}</span>`).join('') +
     '<span class="ob pend cerca">Vence en 10 días</span>';
   await sincronizarBanco(true);
   await renderTablero();
@@ -882,7 +886,7 @@ async function renderTablero() {
 function pintarKpis() {
   const hoy = hoyAR();
   const pag = TAB.filter(r => r.pagado_at && r.pagado_at.slice(0, 4) === String(ANIO));
-  const pend = TAB.filter(r => !r.pagado_at && !r.vencida && !['sin_movimiento', 'no_corresponde'].includes(r.estado) && r.vencimiento && r.vencimiento >= hoy);
+  const pend = TAB.filter(r => !r.pagado_at && !r.vencida && !['sin_movimiento', 'no_corresponde', 'compensada'].includes(r.estado) && r.vencimiento && r.vencimiento >= hoy);
   const conMonto = pend.filter(r => montoDe(r) != null);
   const venc = TAB.filter(r => r.vencida);
   const prox = pend.slice().sort((a, b) => a.vencimiento.localeCompare(b.vencimiento))[0];
@@ -896,7 +900,7 @@ function pintarKpis() {
 function pintarProximos() {
   const hoy = hoyAR(), hasta = addDias(hoy, 45);
   const L = TAB.map((r, i) => ({ r, i }))
-    .filter(({ r }) => !r.pagado_at && !['sin_movimiento', 'no_corresponde'].includes(r.estado) && r.vencimiento && r.vencimiento >= addDias(hoy, -15) && r.vencimiento <= hasta)
+    .filter(({ r }) => !r.pagado_at && !['sin_movimiento', 'no_corresponde', 'compensada'].includes(r.estado) && r.vencimiento && r.vencimiento >= addDias(hoy, -15) && r.vencimiento <= hasta)
     .sort((a, b) => a.r.vencimiento.localeCompare(b.r.vencimiento));
   if (!L.length) { document.getElementById('t-proximos').innerHTML = '<div class="mini">Nada vence en los próximos 45 días.</div>'; return; }
   let h = '<table><tr><th>Vence</th><th>Impuesto</th><th>Período</th><th>Estado</th><th class="num">Importe</th><th></th></tr>';
@@ -937,7 +941,7 @@ function pintarGrilla() {
         const cerca = e === 'a_presentar' || e === 'presentada' || e === 'con_vep' ? (r.vencimiento && r.vencimiento >= hoy && r.vencimiento <= addDias(hoy, 10)) : false;
         if (r.pagado_at && r.pagado_at.slice(0, 4) === String(ANIO)) { tot += Number(r.pago_importe) || 0; totCol[c] += Number(r.pago_importe) || 0; }
         const tip = `${r.nombre} · ${perTxt(r.periodo, r.subperiodo)} · ${EST[e].t}${r.vencimiento ? ' · vence ' + fmtF(r.vencimiento) : ''}${r.pagado_at ? ' · pagado ' + fmtF(r.pagado_at) : ''}${m != null ? ' · ' + plata(m) : ''}`;
-        const sub = subCorto(r.subperiodo), lbl = m != null ? corto(m) : (e === 'sin_movimiento' || e === 'no_corresponde' ? '—' : '·');
+        const sub = subCorto(r.subperiodo), lbl = m != null ? corto(m) : r.saldo_a_favor ? 'a favor ' + corto(r.saldo_a_favor) : (e === 'sin_movimiento' || e === 'no_corresponde' ? '—' : '·');
         return `<button class="ob ${EST[e].c}${cerca ? ' cerca' : ''}" title="${esc(tip)}" onclick="abrirOb(${i})">${sub ? `<small>${esc(sub)}</small>` : ''}${lbl}</button>`;
       }).join('');
       h += `<td class="cel ${c === 0 || c === 13 ? 'otro' : ''}">${items}</td>`;
@@ -985,7 +989,8 @@ function pintarOb() {
          <label>Período <input type="month" id="o-per" value="${r.periodo.slice(0, 7)}"></label>
          <label>Detalle (1Q, cuota 2…) <input id="o-sub" placeholder="opcional" data-sin-miles></label></div>`
     : '';
-  const marca = ['sin_movimiento', 'no_corresponde'].includes(r.estado) ? r.estado : '';
+  const marca = ['sin_movimiento', 'no_corresponde', 'compensada'].includes(r.estado) ? r.estado : '';
+  const resp = r.respaldo_path ? `<div class="archivo" style="margin-top:6px">${ICO.pdf.replace('<svg', '<svg width="16" height="16" style="stroke:currentColor;fill:none;stroke-width:2"')}<a href="${esc(_oneDriveUrl(r.respaldo_path))}" target="_blank" rel="noopener" title="Abre el archivo en OneDrive">${esc(r.respaldo_path.split('/').pop())}</a> <span class="mini">(carpeta del estudio)</span></div>` : '';
   const pagoTes = r.pago_mov_id
     ? `<div class="nota-ver ok">Pago tomado de Tesorería (movimiento ${r.pago_mov_id}). ${ib('desvincular', 'Desvincular este pago de la obligación', 'desasignarOb()')}</div>` : '';
   const verif = r.nuevo ? '' : r.vto_calendario || r.fuente
@@ -1003,7 +1008,8 @@ function pintarOb() {
       <div class="form"><label>Vence <input type="date" id="o-vto" value="${r.vencimiento || ''}"></label>
         <label>Marcar como <select id="o-marca"><option value="">(según lo cargado)</option>
           <option value="sin_movimiento" ${marca === 'sin_movimiento' ? 'selected' : ''}>Sin movimiento (DDJJ en cero)</option>
-          <option value="no_corresponde" ${marca === 'no_corresponde' ? 'selected' : ''}>No corresponde</option></select></label></div>
+          <option value="no_corresponde" ${marca === 'no_corresponde' ? 'selected' : ''}>No corresponde</option>
+          <option value="compensada" ${marca === 'compensada' ? 'selected' : ''}>Compensada con saldo a favor (no se paga)</option></select></label></div>
       ${verif}</div>
     <div class="ob-sec"><h4>Declaración jurada</h4>
       <div class="form">
@@ -1011,7 +1017,7 @@ function pintarOb() {
         <label>Saldo a favor que queda <input type="number" step="0.01" id="o-saf" value="${r.saldo_a_favor ?? ''}"></label>
         <label>Presentada el <input type="date" id="o-pres" value="${r.presentada_at || ''}"></label>
         <label>Nº de transacción <input id="o-ddjjnro" value="${esc(r.ddjj_nro || '')}" data-sin-miles></label></div>
-      <div style="margin-top:8px">${campoArchivo('ddjj', r.ddjj_path, 'DDJJ')}</div></div>
+      <div style="margin-top:8px">${campoArchivo('ddjj', r.ddjj_path, 'DDJJ')}</div>${resp}</div>
     <div class="ob-sec"><h4>VEP</h4>
       <div class="form">
         <label>Nº de VEP <input id="o-vepnro" value="${esc(r.vep_nro || '')}" data-sin-miles></label>
@@ -1089,30 +1095,36 @@ async function renderPagos(silencioso) {
   const { data, error } = await sb.rpc('impuestos_pagos_tesoreria', { p_desde: d, p_hasta: h });
   if (error) { if (!silencioso) document.getElementById('p-lista').innerHTML = `<div class="empty">${esc(error.message)}</div>`; return; }
   PAGOS = data || [];
-  const sin = PAGOS.filter(p => !p.obligacion_id && !p.ignorado).length;
+  const sin = PAGOS.filter(p => Number(p.resto) > 1 && !p.ignorado).length;
   document.getElementById('cnt-pagos').textContent = sin ? String(sin) : '';
   pintarPagos();
 }
 const sugCompleta = p => p.sug_impuesto && p.sug_periodo && (!['sicore_ganancias', 'anticipo_ganancias'].includes(p.sug_impuesto) || p.sug_subperiodo);
+const pendiente = p => Number(p.resto) > 1 && !p.ignorado;
 function pintarPagos() {
   const f = document.getElementById('p-filtro').value;
   const L = PAGOS.map((p, i) => ({ p, i })).filter(({ p }) =>
-    f === 'todos' ? true : f === 'asig' ? !!p.obligacion_id : f === 'ign' ? p.ignorado : (!p.obligacion_id && !p.ignorado));
+    f === 'todos' ? true : f === 'asig' ? Number(p.asignado) > 0 : f === 'ign' ? p.ignorado : pendiente(p));
   const tot = sumar(L.map(x => x.p), p => p.importe);
   document.getElementById('p-stat').textContent = `${L.length} pagos · ${plata(tot)}`;
   if (!L.length) { document.getElementById('p-lista').innerHTML = `<div class="empty">${f === 'sin' ? 'No hay pagos sin asignar en estas fechas.' : 'No hay pagos para mostrar.'}</div>`; return; }
   let h = '<table><tr><th>Fecha</th><th>Cuenta</th><th>Detalle en Tesorería</th><th class="num">Importe</th><th>VEP</th><th>Impuesto</th><th></th></tr>';
   for (const { p, i } of L) {
     let imp, acc = '';
-    if (p.obligacion_id) {
+    const sugTxt = sugCompleta(p) ? `<span class="mini">${p.sug_motivo === 'importe' ? 'Coincide el importe con' : 'Sugerido:'}</span> ${esc(nombreImp(p.sug_impuesto))} · ${perTxt(p.sug_periodo, p.sug_subperiodo)}`
+      : p.sug_impuesto ? `<span class="mini">Parece ${esc(nombreImp(p.sug_impuesto))}, falta el período</span>` : '<span class="mini">Sin sugerencia</span>';
+    if (Number(p.asignado) > 0 && !pendiente(p)) {
       imp = `<span class="chip green">${esc(p.asignado_a)}</span>`;
-      acc = ib('ver', 'Ver la obligación', `abrirObPorId(${p.obligacion_id})`) + ib('editar', 'Asignarlo a otra obligación', `asignarPago(${i})`);
+      acc = ib('ver', 'Ver la obligación', `abrirObPorId(${p.obligacion_id})`) + ib('editar', 'Asignar una parte a otra obligación', `asignarPago(${i})`, '', true);
+    } else if (Number(p.asignado) > 0) {
+      imp = `<span class="chip green">${esc(p.asignado_a)}</span><div class="mini">Falta asignar ${plata2(p.resto)}</div>${sugTxt}`;
+      acc = (sugCompleta(p) ? ib('ok', 'Aceptar la sugerencia por lo que resta', `aceptarPago(${i})`, 'ok') : '') +
+        ib('ver', 'Ver la obligación', `abrirObPorId(${p.obligacion_id})`) + ib('editar', 'Asignar lo que resta', `asignarPago(${i})`);
     } else if (p.ignorado) {
       imp = '<span class="chip gray">Ignorado</span>';
       acc = ib('volver', 'Volver a mostrarlo', `restaurarPago(${i})`);
     } else {
-      imp = sugCompleta(p) ? `<span class="mini">Sugerido:</span> ${esc(nombreImp(p.sug_impuesto))} · ${perTxt(p.sug_periodo, p.sug_subperiodo)}`
-        : p.sug_impuesto ? `<span class="mini">Parece ${esc(nombreImp(p.sug_impuesto))}, falta el período</span>` : '<span class="mini">Sin sugerencia</span>';
+      imp = sugTxt;
       acc = (sugCompleta(p) ? ib('ok', 'Aceptar la sugerencia', `aceptarPago(${i})`, 'ok') : '') +
         ib('editar', 'Asignar a mano', `asignarPago(${i})`) + ib('ignorar', 'No es un impuesto de la SRL: ignorar', `ignorarPago(${i})`);
     }
@@ -1122,8 +1134,8 @@ function pintarPagos() {
   }
   document.getElementById('p-lista').innerHTML = h + '</table>';
 }
-async function _asignar(p, imp, per, sub) {
-  const { error } = await sb.rpc('impuestos_asignar_pago', { p_mov_id: p.mov_id, p_impuesto: imp, p_periodo: per, p_subperiodo: sub || null });
+async function _asignar(p, imp, per, sub, monto) {
+  const { error } = await sb.rpc('impuestos_asignar_pago', { p_mov_id: p.mov_id, p_impuesto: imp, p_periodo: per, p_subperiodo: sub || null, p_importe: monto ?? null });
   if (error) { toast('No se pudo asignar: ' + error.message, 'error'); return false; }
   return true;
 }
@@ -1132,7 +1144,7 @@ async function aceptarPago(i) {
   if (await _asignar(p, p.sug_impuesto, p.sug_periodo, p.sug_subperiodo)) { toast('Asignado', 'success'); await renderPagos(); }
 }
 async function aceptarTodas() {
-  const L = PAGOS.filter(p => !p.obligacion_id && !p.ignorado && sugCompleta(p));
+  const L = PAGOS.filter(p => pendiente(p) && sugCompleta(p));
   if (!L.length) { toast('No hay sugerencias completas para aceptar', ''); return; }
   if (!confirm(`¿Asignar ${L.length} pagos a la obligación sugerida? Después se puede cambiar uno por uno.`)) return;
   let ok = 0;
@@ -1143,14 +1155,15 @@ async function asignarPago(i) {
   const p = PAGOS[i];
   const imp0 = p.sug_impuesto || 'iva', per0 = (p.sug_periodo || p.fecha.slice(0, 8) + '01').slice(0, 7);
   abrirOv(`
-    <div class="ob-head"><div style="flex:1"><h3>Asignar pago de ${plata2(p.importe)}</h3>
+    <div class="ob-head"><div style="flex:1"><h3>Asignar pago de ${plata2(p.importe)}</h3>${Number(p.asignado) > 0 ? `<div class="mini">Ya asignado: ${esc(p.asignado_a)} · resta ${plata2(p.resto)}</div>` : ''}
       <div class="mini">${fmtF(p.fecha)} · ${esc(p.cuenta)} · ${esc(p.nota || p.descripcion)}</div></div>${ib('cerrar', 'Cancelar', 'cerrarOv()')}</div>
     <div class="form">
       <label>Impuesto <select id="a-imp" onchange="sugerirSub()">${CAT.filter(k => k.activo).map(k => `<option value="${k.clave}" ${k.clave === imp0 ? 'selected' : ''}>${esc(k.nombre)}</option>`).join('')}</select></label>
       <label>Período <input type="month" id="a-per" value="${per0}" onchange="sugerirSub()"></label>
       <label>Detalle (1Q, 2Q, cuota…) <input id="a-sub" list="a-subs" value="${esc(p.sug_subperiodo || '')}" data-sin-miles><datalist id="a-subs"></datalist></label>
+      <label>Importe de este pago que corresponde <input type="number" step="0.01" id="a-monto" value="${p.resto}"></label>
     </div>
-    <div class="mini" style="margin-top:6px">Si la obligación ya existe (por ejemplo, con la DDJJ cargada), el pago se le agrega. Si no, se crea.</div>
+    <div class="mini" style="margin-top:6px">Si la obligación ya existe (por ejemplo, con la DDJJ cargada), el pago se le agrega. Si no, se crea. Si un VEP pagó dos cosas (cargas sociales y retenciones), poné acá la parte de una y después asigná el resto a la otra.</div>
     <div class="ob-pie">${ib('cerrar', 'Cancelar', 'cerrarOv()')}${ib('guardar', 'Asignar', `confirmarAsignar(${i})`, 'main')}</div>`);
   sugerirSub();
 }
@@ -1163,7 +1176,8 @@ async function sugerirSub() {
 async function confirmarAsignar(i) {
   const imp = document.getElementById('a-imp').value, per = document.getElementById('a-per').value, sub = txtOrNull('a-sub');
   if (!imp || !per) { toast('Elegí impuesto y período', 'error'); return; }
-  if (await _asignar(PAGOS[i], imp, per + '-01', sub)) { toast('Asignado', 'success'); cerrarOv(); await renderPagos(); }
+  const monto = numOrNull('a-monto');
+  if (await _asignar(PAGOS[i], imp, per + '-01', sub, monto)) { toast('Asignado', 'success'); cerrarOv(); await renderPagos(); }
 }
 async function ignorarPago(i) {
   const motivo = prompt('¿Por qué no es un impuesto de la SRL? (opcional, ej. "seguro", "sindicato")', '');
@@ -1335,6 +1349,6 @@ async function guardarImpuesto() {
 }
 
 </script>
-<script src="manual.js?v=5"></script>
+<script src="manual.js?v=6"></script>
 </body>
 </html>
