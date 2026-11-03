@@ -588,6 +588,10 @@ table.grilla th.otro, table.grilla td.otro { background: #fafafa; }
 .ob-pie { display: flex; justify-content: flex-end; gap: 6px; align-items: center; margin-top: 6px; }
 @media (max-width: 600px) { .kpi .k-v { font-size: 18px; } }
 td.num { white-space: nowrap; }
+.vent-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+.vent-head h3 { margin: 0; }
+#t-ventanilla tr.nl td { font-weight: 700; }
+#t-ventanilla tr.nl.alta td { background: var(--red-bg); }
 #t-proximos, #p-lista, #c-lista, #r-dist, #r-manual, #k-lista { overflow-x: auto; }
 nav.tabs button .count { background: #f59e0b; color: #fff; padding: 1px 7px; border-radius: 10px; font-size: 11px; margin-left: 5px; font-weight: 700; display: none; }
 nav.tabs button .count:not(:empty) { display: inline-block; }
@@ -636,6 +640,7 @@ nav.tabs button .count:not(:empty) { display: inline-block; }
         <span id="t-acciones"></span>
       </div>
       <div class="kpis" id="t-kpis"></div>
+      <div class="card" id="t-ventanilla"></div>
       <div class="card">
         <h3>Próximos vencimientos <span class="mini">(los próximos 45 días, sin pago registrado)</span></h3>
         <div id="t-proximos"></div>
@@ -806,6 +811,7 @@ const ICO = {
   mas: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
   sync: '<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.5 9a9 9 0 0 1 14.9-3.4L23 10M1 14l4.6 4.4A9 9 0 0 0 20.5 15"/></svg>',
   borrar: '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>',
+  externo: '<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
   pdf: '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
 };
 const ib = (ico, title, onclick, extra = '', dis = false) =>
@@ -887,6 +893,7 @@ async function renderTablero() {
   if (error) { document.getElementById('t-grilla').innerHTML = `<div class="empty">${esc(error.message)}</div>`; return; }
   TAB = data || [];
   pintarKpis(); pintarProximos(); pintarGrilla();
+  renderVentanilla();
 }
 function pintarKpis() {
   const hoy = hoyAR();
@@ -955,6 +962,58 @@ function pintarGrilla() {
   }
   h += `<tr class="pie"><td class="imp" style="background:var(--gray-light)">Pagado en el mes</td>${cols.map(c => `<td class="${c === 0 || c === 13 ? 'otro' : ''}">${totCol[c] ? corto(totCol[c]) : ''}</td>`).join('')}<td class="tot">${plata(totCol.reduce((a, b) => a + b, 0))}</td></tr>`;
   document.getElementById('t-grilla').innerHTML = h + '</table>';
+}
+
+// ── VENTANILLA ELECTRÓNICA DE ARCA (3-nov-2026, JP) ───────────────────────────────────────────
+// La lista la trae todos los días la tarea CRM_Adorno_ArcaVentanilla de la PC de JP (impuestos-adorno/_estudio/
+// arca_ventanilla.py, web service veconsumerws con el certificado AdornoPadron). Solo LISTA: abrir una comunicación
+// por el web service la marca como leída en ARCA, por eso se leen en el portal.
+let VENT = [], VENT_TODAS = false;
+const ARCA_LOGIN = 'https://auth.afip.gob.ar/contribuyente_/login.xhtml';
+const PRIO = { 1: ['Alta', 'red'], 2: ['Media', 'amber'], 3: ['Baja', 'gray'] };
+function toggleVentanilla() { VENT_TODAS = !VENT_TODAS; pintarVentanilla(VENT._sync); }
+async function renderVentanilla() {
+  const [v, s] = await Promise.all([
+    sb.from('impuestos_ventanilla').select('*').order('fecha_publicacion', { ascending: false }).limit(80),
+    sb.from('impuestos_sync').select('*').eq('clave', 'ventanilla_arca').maybeSingle()]);
+  const el = document.getElementById('t-ventanilla');
+  if (v.error) { el.innerHTML = `<h3>Ventanilla Electrónica de ARCA</h3><div class="mini">${esc(v.error.message)}</div>`; return; }
+  VENT = v.data || []; VENT._sync = s.data || null;
+  pintarVentanilla(VENT._sync);
+}
+function pintarVentanilla(sync) {
+  const el = document.getElementById('t-ventanilla');
+  const nl = VENT.filter(c => c.estado === 1), altas = nl.filter(c => c.prioridad === 1).length;
+  const ult = sync && sync.ultima_at ? new Date(sync.ultima_at) : null;
+  const viejo = !ult || (Date.now() - ult.getTime()) > 36 * 3600 * 1000;
+  const cuando = ult ? ult.toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : null;
+  const chip = nl.length ? `<span class="chip ${altas ? 'red' : 'amber'}">${nl.length} sin leer${altas ? ` · ${altas} de prioridad alta` : ''}</span>`
+    : '<span class="chip green">Nada sin leer</span>';
+  const aviso = !ult ? '<div class="nota-ver">Todavía no corrió la consulta diaria.</div>'
+    : viejo ? `<div class="nota-ver">La consulta diaria no corre desde el ${esc(cuando)}: la PC de JP tiene que estar prendida a las 9:15.</div>`
+    : sync.ok === false ? `<div class="nota-ver">La última consulta falló: ${esc(sync.detalle || '')}</div>` : '';
+  const lista = VENT_TODAS ? VENT : nl;
+  let h = `<div class="vent-head"><h3>Ventanilla Electrónica de ARCA</h3>${chip}
+    <span class="mini">${cuando ? 'consultada ' + esc(cuando) : ''}</span><span style="flex:1"></span>
+    ${ib('ver', VENT_TODAS ? 'Ver solo las sin leer' : 'Ver todas las del último año', 'toggleVentanilla()')}
+    <a class="ib" href="${ARCA_LOGIN}" target="_blank" rel="noopener" title="Abrir ARCA para leerlas: Ventanilla Electrónica, CLAUDIA ADORNO S.R.L.">${ICO.externo}</a></div>${aviso}`;
+  if (!lista.length) {
+    h += `<div class="mini">${VENT.length ? 'No hay comunicaciones sin leer en el último año.' : 'Sin comunicaciones registradas.'}</div>`;
+  } else {
+    h += '<table><tr><th>Fecha</th><th>Quién la manda</th><th>Asunto</th><th>Prioridad</th><th>Estado</th></tr>';
+    for (const c of lista) {
+      const p = PRIO[c.prioridad] || ['—', 'gray'];
+      h += `<tr class="${c.estado === 1 ? 'nl' : ''}${c.estado === 1 && c.prioridad === 1 ? ' alta' : ''}">
+        <td style="white-space:nowrap">${fmtF((c.fecha_publicacion || '').slice(0, 10))}</td>
+        <td>${esc(c.sistema_desc || '')}</td>
+        <td>${esc(c.asunto || '')}${c.tiene_adjunto ? ' <span class="mini" title="Tiene archivo adjunto">· con adjunto</span>' : ''}</td>
+        <td><span class="chip ${p[1]}">${p[0]}</span></td>
+        <td class="mini">${c.estado === 1 ? 'Sin leer' : 'Leída'}</td></tr>`;
+    }
+    h += '</table>';
+  }
+  h += '<div class="mini" style="margin-top:6px">Para leerlas: ARCA → Ventanilla Electrónica → CLAUDIA ADORNO S.R.L. El sistema solo las lista y no las marca como leídas.</div>';
+  el.innerHTML = h;
 }
 
 // ── OBLIGACIÓN (modal) ─────────────────────────────────────────────────────────────────────────
@@ -1356,6 +1415,6 @@ async function guardarImpuesto() {
 }
 
 </script>
-<script src="manual.js?v=6"></script>
+<script src="manual.js?v=7"></script>
 </body>
 </html>

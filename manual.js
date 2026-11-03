@@ -58,6 +58,17 @@ function _manualSecciones() {
       ],
     },
     {
+      icon: '📬', titulo: 'Ventanilla Electrónica de ARCA',
+      desc: 'Arriba del Tablero: las comunicaciones que ARCA le manda a la SRL (intimaciones, actas, avisos de Aduana, categorización PyME…).',
+      pasos: [
+        'Todos los días a las 9:15 la PC de JP consulta la Ventanilla Electrónica con el certificado del sistema y actualiza la lista. Si la PC estuvo apagada, la tarjeta avisa desde cuándo no se consulta.',
+        'Se muestran las comunicaciones sin leer, con su prioridad (alta en rojo). Con el ojo se ven todas las del último año.',
+        'Si hay alguna sin leer, a JP le llega un aviso al celular cada mañana.',
+        'Para leerlas hay que entrar a ARCA (el botón con la flecha abre el portal): Ventanilla Electrónica, elegir CLAUDIA ADORNO S.R.L. El sistema solo las lista: no las abre ni las marca como leídas, para no perder el aviso.',
+        'Al día siguiente de leerla en ARCA, la tarjeta la muestra como leída.',
+      ],
+    },
+    {
       icon: '📅', titulo: 'Calendario de vencimientos',
       desc: 'Las fechas de vencimiento de cada impuesto para nuestro CUIT (terminado en 0).',
       pasos: [
