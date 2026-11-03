@@ -74,7 +74,9 @@ function _manualSecciones() {
       pasos: [
         'Las fechas con ✓ salen de la norma oficial (por ejemplo Ingresos Brutos, de la resolución de la Comisión Arbitral). Las demás son estimadas por la regla de cada impuesto: conviene confirmarlas en la agenda de vencimientos de ARCA y tildar ✓.',
         'Cambiar una fecha acá cambia el vencimiento de las obligaciones que no tienen uno propio.',
-        'El botón ⊕ agrega un vencimiento (por ejemplo los de 2027 cuando salgan, o una prórroga).',
+        'El día 1 de cada mes la PC de JP vuelve a consultar la agenda oficial de ARCA: si ARCA prorrogó o cambió una fecha, el calendario se corrige solo (queda anotado "antes dd/mm" en la fuente) y a JP le llega un aviso. Desde noviembre también carga las fechas del año siguiente cuando ARCA las publica.',
+        'Si una fecha la cambiaste a mano, el chequeo no la pisa: solo avisa si ARCA dice otra cosa. Los anticipos de Ganancias (fechas de Martín) e Ingresos Brutos (Comisión Arbitral) no están en esa agenda y no se tocan.',
+        'El botón ⊕ agrega un vencimiento (por ejemplo una prórroga que salió en el medio del mes).',
       ],
     },
     {
