@@ -688,7 +688,7 @@ nav.tabs button .count:not(:empty) { display: inline-block; }
       <button class="hbtn ab-fijo" onclick="doLogout()" title="Salir" aria-label="Salir"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="lb">Salir</span></button>
     </div>
   </header>
-  <script src="/hub/banner.js?v=7"></script>
+  <script src="/hub/banner.js?v=8"></script>
   <main>
 
     <section id="content-tablero" class="tab-content active">
@@ -807,6 +807,9 @@ const plata2 = n => (n == null || isNaN(n)) ? '—' : '$ ' + Number(n).toLocaleS
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 function hoyAR() { const p = new Intl.DateTimeFormat('en-CA', {timeZone: 'America/Argentina/Buenos_Aires', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date()); return p; }
 function toast(msg, tipo) { const t = document.createElement('div'); t.className = 'toast ' + (tipo || ''); t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3200); }
+// (16-nov-2026) los errores que se muestran adentro de la pantalla, en castellano simple con el traductor común del Hub
+// (/hub/banner.js → ADORNO_AVISO.traducir). Los toast de error ya los convierte banner.js en cartel rojo con ✕.
+const txtError = e => { try { if (window.ADORNO_AVISO && ADORNO_AVISO.traducir) return ADORNO_AVISO.traducir(e).texto; } catch (_) {} return (e && e.message) || String(e || 'Algo falló. Probá de nuevo.'); };
 function switchTab(k) {
   document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('active', b.id === 'tab-' + k));
   document.querySelectorAll('.tab-content').forEach(s => s.classList.toggle('active', s.id === 'content-' + k));
@@ -822,7 +825,7 @@ async function doLogin() {
     const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
     if (error) throw error;
     await entrar(data.user);
-  } catch (e) { errEl.textContent = 'Error: ' + (e.message || 'desconocido'); }
+  } catch (e) { errEl.textContent = txtError(e); }
   finally { document.getElementById('btn-login').disabled = false; }
 }
 async function entrar(user) {
@@ -1003,12 +1006,12 @@ function pedirSuperior(f) {
       const salir = async () => { try { await cli.auth.signOut({ scope: 'local' }); } catch (x) {} };
       try {
         const r = await cli.auth.signInWithPassword({ email: em, password: pw });
-        if (r.error) throw new Error('Mail o clave incorrectos.');
+        if (r.error) throw r.error;   // el traductor dice «El usuario o la clave no son correctos» o «No hay conexión…»
         if (window.ADORNO_MFA && ADORNO_MFA.pedirCodigo && !(await ADORNO_MFA.pedirCodigo(cli))) { await salir(); throw new Error('Sin el código del celular no se puede autorizar.'); }
         const { data: ok, error: e1 } = await cli.rpc('hub_autoriza', { p_funcion: f });   // admin, o persona con legajo y la función habilitada
         if (e1 || ok !== true) { await salir(); throw new Error('Ese usuario no puede autorizar ' + (FUNCIONES[f] || f) + ': tiene que ser una persona (no la cuenta del local ni de la oficina) con esa función habilitada.'); }
         cli._sup = em; toast('Autorizó ' + em, 'success'); fin(cli);
-      } catch (e) { err.textContent = e.message || 'No se pudo autorizar.'; si.disabled = false; si.textContent = 'Autorizar'; }
+      } catch (e) { err.textContent = txtError(e) || 'No se pudo autorizar.'; si.disabled = false; si.textContent = 'Autorizar'; }
     };
   });
 }
@@ -1079,7 +1082,7 @@ async function renderTablero() {
     bloqueo('t-grilla', 'impuestos.ver_tablero', 'renderTablero()'); return;
   }
   const { data, error } = await sb.rpc('impuestos_tablero', { p_anio: ANIO });
-  if (error) { document.getElementById('t-grilla').innerHTML = `<div class="empty">${esc(error.message)}</div>`; return; }
+  if (error) { document.getElementById('t-grilla').innerHTML = `<div class="empty">${esc(txtError(error))}</div>`; return; }
   TAB = data || [];
   pintarKpis(); pintarProximos(); pintarGrilla();
   renderVentanilla();
@@ -1166,7 +1169,7 @@ async function renderVentanilla() {
     sb.from('impuestos_ventanilla').select('*').order('fecha_publicacion', { ascending: false }).limit(80),
     sb.from('impuestos_sync').select('*').eq('clave', 'ventanilla_arca').maybeSingle()]);
   const el = document.getElementById('t-ventanilla');
-  if (v.error) { el.innerHTML = `<h3>Ventanilla Electrónica de ARCA</h3><div class="mini">${esc(v.error.message)}</div>`; return; }
+  if (v.error) { el.innerHTML = `<h3>Ventanilla Electrónica de ARCA</h3><div class="mini">${esc(txtError(v.error))}</div>`; return; }
   VENT = v.data || []; VENT._sync = s.data || null;
   pintarVentanilla(VENT._sync);
 }
@@ -1361,7 +1364,7 @@ async function renderPagos(silencioso) {
   const d = document.getElementById('p-desde').value, h = document.getElementById('p-hasta').value;
   if (!d || !h) return;
   const { data, error } = await sb.rpc('impuestos_pagos_tesoreria', { p_desde: d, p_hasta: h });
-  if (error) { if (!silencioso) document.getElementById('p-lista').innerHTML = `<div class="empty">${esc(error.message)}</div>`; return; }
+  if (error) { if (!silencioso) document.getElementById('p-lista').innerHTML = `<div class="empty">${esc(txtError(error))}</div>`; return; }
   PAGOS = data || [];
   const sin = PAGOS.filter(p => Number(p.resto) > 1 && !p.ignorado).length;
   document.getElementById('cnt-pagos').textContent = sin ? String(sin) : '';
@@ -1480,7 +1483,7 @@ async function renderCalendario() {
   const { data, error } = await sb.from('impuestos_calendario').select('*')
     .or(`and(periodo.gte.${a}-01-01,periodo.lte.${a}-12-31),and(vencimiento.gte.${a}-01-01,vencimiento.lte.${a}-12-31)`)
     .order('vencimiento');
-  if (error) { document.getElementById('c-lista').innerHTML = `<div class="empty">${esc(error.message)}</div>`; return; }
+  if (error) { document.getElementById('c-lista').innerHTML = `<div class="empty">${esc(txtError(error))}</div>`; return; }
   CAL = data || []; pintarCalendario();
 }
 function pintarCalendario() {
@@ -1553,7 +1556,7 @@ async function renderReparto() {
   const per = periodoReparto();
   if (!(await puedeVer('impuestos.reparto', 'impuestos.ver_tablero'))) { bloqueo('r-dist', 'impuestos.reparto', 'renderReparto()'); return; }
   const { data: dist, error } = await sb.rpc('impuestos_distribuir', { p_periodo: per, p_prueba: false });
-  if (error) { document.getElementById('r-dist').innerHTML = `<div class="empty">${esc(error.message)}</div>`; return; }
+  if (error) { document.getElementById('r-dist').innerHTML = `<div class="empty">${esc(txtError(error))}</div>`; return; }
   const D = dist || [];
   if (!D.length) { document.getElementById('r-dist').innerHTML = '<div class="empty">Nada para repartir en este mes.</div>'; document.getElementById('r-stat').textContent = ''; }
   else {
@@ -1643,6 +1646,6 @@ async function guardarImpuesto() {
 }
 
 </script>
-<script src="manual.js?v=11"></script>
+<script src="manual.js?v=12"></script>
 </body>
 </html>
