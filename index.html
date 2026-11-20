@@ -662,6 +662,7 @@ th { background: var(--gray-light); font-size: 12px; font-weight: 600; color: va
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 tr.nivel1 td { background: var(--primary-bg); font-weight: 700; } tr.nivel2 td { background: #f8fafc; font-weight: 600; }
 tr.dim { color: var(--muted); }
+table.tt { overflow: clip; }   /* (19-nov) tablas tipo Excel: con overflow:hidden la tabla era su propia caja de scroll y los títulos fijos tapaban el primer renglón */
 .chip { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap; }
 .chip.green { background: var(--green-bg); color: var(--green); } .chip.amber { background: var(--amber-bg); color: var(--amber); }
 .chip.red { background: var(--red-bg); color: var(--red); } .chip.gray { background: var(--gray-light); color: var(--muted); }
@@ -701,6 +702,7 @@ table.grilla th, table.grilla td { padding: 6px 5px; border-bottom: 1px solid va
 table.grilla th { text-align: center; }
 table.grilla td.imp { min-width: 170px; position: sticky; left: 0; background: white; z-index: 1; font-size: 13px; }
 table.grilla th.imp { position: sticky; left: 0; z-index: 2; text-align: left; }
+table.grilla.tt > thead > tr > th.tt-th { z-index: 2; } table.grilla.tt > thead > tr > th.imp.tt-th { z-index: 3; }   /* (19-nov) títulos fijos de adorno-tablas.js: el de Impuesto queda arriba de todo */
 table.grilla td.cel { text-align: center; min-width: 62px; }
 table.grilla td.tot, table.grilla th.tot { text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; white-space: nowrap; }
 table.grilla tr.pie td { background: var(--gray-light); font-weight: 700; font-size: 12px; text-align: center; }
@@ -1204,16 +1206,16 @@ function pintarProximos() {
     .filter(({ r }) => !r.pagado_at && !['sin_movimiento', 'no_corresponde', 'compensada'].includes(r.estado) && r.vencimiento && r.vencimiento >= addDias(hoy, -15) && r.vencimiento <= hasta)
     .sort((a, b) => a.r.vencimiento.localeCompare(b.r.vencimiento));
   if (!L.length) { document.getElementById('t-proximos').innerHTML = '<div class="mini">Nada vence en los próximos 45 días.</div>'; return; }
-  let h = '<table><tr><th>Vence</th><th>Impuesto</th><th>Período</th><th>Estado</th><th class="num">Importe</th><th></th></tr>';
+  let h = '<table><thead><tr><th>Vence</th><th>Impuesto</th><th>Período</th><th>Estado</th><th class="num">Importe</th><th></th></tr></thead><tbody>';
   for (const { r, i } of L) {
     const e = estadoDe(r);
     h += `<tr><td style="white-space:nowrap">${fmtF(r.vencimiento)}${r.verificado ? '' : ' <span class="mini" title="Fecha estimada: verificarla en la agenda de ARCA">≈</span>'}</td>
-      <td>${esc(r.nombre)} <span class="mini">${esc(ORG[r.organismo] || '')}</span></td><td>${perTxt(r.periodo, r.subperiodo)}</td>
+      <td>${esc(r.nombre)} <span class="mini">${esc(ORG[r.organismo] || '')}</span></td><td data-orden="${r.periodo}">${perTxt(r.periodo, r.subperiodo)}</td>
       <td><span class="ob ${EST[e].c}" style="display:inline-block;width:auto;padding:2px 8px;cursor:default">${EST[e].t}</span></td>
       <td class="num">${montoDe(r) != null ? plata(montoDe(r)) : '<span class="mini">sin importe</span>'}</td>
       <td>${ib('editar', 'Abrir y cargar DDJJ, VEP o pago', `abrirOb(${i})`)}</td></tr>`;
   }
-  document.getElementById('t-proximos').innerHTML = h + '</table>';
+  document.getElementById('t-proximos').innerHTML = h + '</tbody></table>';
 }
 function colDe(r) {
   const ref = VER === 'periodo' ? r.periodo : (r.vencimiento || r.pagado_at || r.periodo);
@@ -1230,7 +1232,7 @@ function pintarGrilla() {
   const hayAnt = [...filas.values()].some(f => f.celdas[0].length), haySig = [...filas.values()].some(f => f.celdas[13].length);
   const cols = [...(hayAnt ? [0] : []), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ...(haySig ? [13] : [])];
   const tit = c => c === 0 ? String(ANIO - 1) : c === 13 ? String(ANIO + 1) : MCORTO[c - 1];
-  let h = `<table class="grilla"><tr><th class="imp">Impuesto</th>${cols.map(c => `<th class="${c === 0 || c === 13 ? 'otro' : ''}" title="${c === 0 || c === 13 ? (VER === 'periodo' ? 'Período de ese año' : 'Vence o se pagó ese año') : ''}">${tit(c)}</th>`).join('')}<th class="tot">Pagado ${ANIO}</th></tr>`;
+  let h = `<table class="grilla" data-tt-clave="impuestos-grilla"><thead><tr><th class="imp">Impuesto</th>${cols.map(c => `<th class="${c === 0 || c === 13 ? 'otro' : ''}" title="${c === 0 || c === 13 ? (VER === 'periodo' ? 'Período de ese año' : 'Vence o se pagó ese año') : ''}">${tit(c)}</th>`).join('')}<th class="tot">Pagado ${ANIO}</th></tr></thead><tbody>`;
   const totCol = Array(14).fill(0);
   for (const [, f] of filas) {
     const k = f.r;
@@ -1249,8 +1251,8 @@ function pintarGrilla() {
     }
     h += `<td class="tot">${tot ? plata(tot) : '—'}</td></tr>`;
   }
-  h += `<tr class="pie"><td class="imp" style="background:var(--gray-light)">Pagado en el mes</td>${cols.map(c => `<td class="${c === 0 || c === 13 ? 'otro' : ''}">${totCol[c] ? corto(totCol[c]) : ''}</td>`).join('')}<td class="tot">${plata(totCol.reduce((a, b) => a + b, 0))}</td></tr>`;
-  document.getElementById('t-grilla').innerHTML = h + '</table>';
+  h += `</tbody><tfoot><tr class="pie tt-fija"><td class="imp" style="background:var(--gray-light)">Pagado en el mes</td>${cols.map(c => `<td class="${c === 0 || c === 13 ? 'otro' : ''}">${totCol[c] ? corto(totCol[c]) : ''}</td>`).join('')}<td class="tot">${plata(totCol.reduce((a, b) => a + b, 0))}</td></tr>`;
+  document.getElementById('t-grilla').innerHTML = h + '</tfoot></table>';
 }
 
 // ── VENTANILLA ELECTRÓNICA DE ARCA (3-nov-2026, JP) ───────────────────────────────────────────
@@ -1289,7 +1291,7 @@ function pintarVentanilla(sync) {
   if (!lista.length) {
     h += `<div class="mini">${VENT.length ? 'No hay comunicaciones sin leer en el último año.' : 'Sin comunicaciones registradas.'}</div>`;
   } else {
-    h += '<table><tr><th>Fecha</th><th>Quién la manda</th><th>Asunto</th><th>Prioridad</th><th>Estado</th></tr>';
+    h += '<table><thead><tr><th>Fecha</th><th>Quién la manda</th><th>Asunto</th><th>Prioridad</th><th>Estado</th></tr></thead><tbody>';
     for (const c of lista) {
       const p = PRIO[c.prioridad] || ['—', 'gray'];
       h += `<tr class="${c.estado === 1 ? 'nl' : ''}${c.estado === 1 && c.prioridad === 1 ? ' alta' : ''}">
@@ -1299,7 +1301,7 @@ function pintarVentanilla(sync) {
         <td><span class="chip ${p[1]}">${p[0]}</span></td>
         <td class="mini">${c.estado === 1 ? 'Sin leer' : 'Leída'}</td></tr>`;
     }
-    h += '</table>';
+    h += '</tbody></table>';
   }
   h += '<div class="mini" style="margin-top:6px">Para leerlas: ARCA → Ventanilla Electrónica → CLAUDIA ADORNO S.R.L. El sistema solo las lista y no las marca como leídas.</div>';
   el.innerHTML = h;
@@ -1477,7 +1479,7 @@ function pintarPagos() {
   const tot = sumar(L.map(x => x.p), p => p.importe);
   document.getElementById('p-stat').textContent = `${L.length} pagos · ${plata(tot)}`;
   if (!L.length) { document.getElementById('p-lista').innerHTML = `<div class="empty">${f === 'sin' ? 'No hay pagos sin asignar en estas fechas.' : 'No hay pagos para mostrar.'}</div>`; return; }
-  let h = '<table><tr><th>Fecha</th><th>Cuenta</th><th>Detalle en Tesorería</th><th class="num">Importe</th><th>VEP</th><th>Impuesto</th><th></th></tr>';
+  let h = '<table><thead><tr><th>Fecha</th><th>Cuenta</th><th>Detalle en Tesorería</th><th class="num">Importe</th><th>VEP</th><th>Impuesto</th><th></th></tr></thead><tbody>';
   for (const { p, i } of L) {
     let imp, acc = '';
     const sugTxt = sugCompleta(p) ? `<span class="mini">${p.sug_motivo === 'importe' ? 'Coincide el importe con' : 'Sugerido:'}</span> ${esc(nombreImp(p.sug_impuesto))} · ${perTxt(p.sug_periodo, p.sug_subperiodo)}`
@@ -1501,7 +1503,7 @@ function pintarPagos() {
       <td>${esc(p.nota || p.descripcion)}${p.nota ? `<div class="mini">${esc(p.descripcion)}</div>` : ''}</td>
       <td class="num">${plata2(p.importe)}</td><td class="mini">${esc(p.vep_nro || '')}</td><td>${imp}</td><td style="white-space:nowrap">${acc}</td></tr>`;
   }
-  document.getElementById('p-lista').innerHTML = h + '</table>';
+  document.getElementById('p-lista').innerHTML = h + '</tbody></table>';
 }
 async function _asignar(p, imp, per, sub, monto, db = sb) {
   const { error } = await db.rpc('impuestos_asignar_pago', { p_mov_id: p.mov_id, p_impuesto: imp, p_periodo: per, p_subperiodo: sub || null, p_importe: monto ?? null });
@@ -1591,15 +1593,15 @@ function pintarCalendario() {
   const ver = L.filter(x => x.c.verificado).length;
   document.getElementById('c-stat').textContent = `${L.length} vencimientos · ${ver} con fecha oficial`;
   if (!L.length) { document.getElementById('c-lista').innerHTML = '<div class="empty">No hay vencimientos cargados para este año.</div>'; return; }
-  let h = '<table><tr><th>Impuesto</th><th>Período</th><th>Vence</th><th title="Fecha confirmada con la norma o la agenda oficial">Oficial</th><th>Fuente</th><th></th></tr>';
+  let h = '<table><thead><tr><th>Impuesto</th><th>Período</th><th>Vence</th><th title="Fecha confirmada con la norma o la agenda oficial">Oficial</th><th>Fuente</th><th></th></tr></thead><tbody>';
   for (const { c, i } of L) {
-    h += `<tr><td>${esc(nombreImp(c.impuesto))}</td><td>${perTxt(c.periodo, c.subperiodo)}</td>
-      <td><input type="date" value="${c.vencimiento}" ${ve('impuestos.calendario') ? '' : 'disabled'} onchange="guardarVto(${i}, {vencimiento: this.value})"></td>
+    h += `<tr><td>${esc(nombreImp(c.impuesto))}</td><td data-orden="${c.periodo}">${perTxt(c.periodo, c.subperiodo)}</td>
+      <td data-orden="${c.vencimiento}"><input type="date" value="${c.vencimiento}" ${ve('impuestos.calendario') ? '' : 'disabled'} onchange="guardarVto(${i}, {vencimiento: this.value})"></td>
       <td><input type="checkbox" ${c.verificado ? 'checked' : ''} ${ve('impuestos.calendario') ? '' : 'disabled'} onchange="guardarVto(${i}, {verificado: this.checked})" title="Tildar cuando la fecha está confirmada en la agenda de ARCA o la norma"></td>
       <td class="mini">${esc(c.fuente || '')}</td>
       <td>${ve('impuestos.calendario_borrar') ? ib('borrar', 'Borrar este vencimiento', `borrarVto(${i})`, 'warn') : ''}</td></tr>`;
   }
-  document.getElementById('c-lista').innerHTML = h + '</table>';
+  document.getElementById('c-lista').innerHTML = h + '</tbody></table>';
 }
 async function guardarVto(i, cambios) {
   const c = CAL[i];
@@ -1657,22 +1659,22 @@ async function renderReparto() {
   const D = dist || [];
   if (!D.length) { document.getElementById('r-dist').innerHTML = '<div class="empty">Nada para repartir en este mes.</div>'; document.getElementById('r-stat').textContent = ''; }
   else {
-    let h = '<table><tr><th>Impuesto</th><th>Categoría en la planilla</th><th>Unidad</th><th class="num">Importe</th><th>Cálculo</th></tr>';
+    let h = '<table><thead><tr><th>Impuesto</th><th>Categoría en la planilla</th><th>Unidad</th><th class="num">Importe</th><th>Cálculo</th></tr></thead><tbody>';
     for (const d of D) h += `<tr><td>${esc(d.nombre)}</td><td><span class="chip gray">${esc(d.categoria)}</span></td><td>${esc(uniNombre(d.unidad))}</td><td class="num">${plata(d.importe)}</td><td class="mini">${esc(d.calculo)}</td></tr>`;
-    document.getElementById('r-dist').innerHTML = h + '</table>';
+    document.getElementById('r-dist').innerHTML = h + '</tbody></table>';
     document.getElementById('r-stat').innerHTML = `Total repartido: <strong>${plata(sumar(D, d => d.importe))}</strong>`;
   }
   const man = CAT.filter(k => k.activo && k.prorrateo === 'manual');
   document.getElementById('r-manual-card').style.display = man.length ? '' : 'none';
   if (!man.length) return;
   const { data: rows } = await sb.from('impuestos_mensual').select('*').eq('periodo', per).eq('es_prueba', false).not('unidad', 'is', null);
-  let h = '<table><tr><th>Impuesto</th><th>Unidad</th><th class="num">Importe</th><th></th></tr>';
+  let h = '<table><thead><tr><th>Impuesto</th><th>Unidad</th><th class="num">Importe</th><th></th></tr></thead><tbody>';
   for (const k of man) for (const u of UNIDADES) {
     const r = (rows || []).find(x => x.impuesto === k.clave && x.unidad === u.clave) || {};
-    h += `<tr><td>${esc(k.nombre)}</td><td>${esc(u.nombre)}</td><td class="num"><input type="number" step="0.01" id="man-${k.clave}-${u.clave}" value="${r.importe ?? ''}" style="width:150px;text-align:right" ${ve('impuestos.reparto') ? '' : 'disabled'}></td>
+    h += `<tr><td>${esc(k.nombre)}</td><td>${esc(u.nombre)}</td><td class="num" data-orden="${r.importe != null ? String(r.importe).replace('.', ',') : ''}"><input type="number" step="0.01" id="man-${k.clave}-${u.clave}" value="${r.importe ?? ''}" style="width:150px;text-align:right" ${ve('impuestos.reparto') ? '' : 'disabled'}></td>
       <td>${ve('impuestos.reparto') ? ib('guardar', 'Guardar', `guardarManual('${k.clave}','${u.clave}',${r.id || 'null'})`) : ''}</td></tr>`;
   }
-  document.getElementById('r-manual').innerHTML = h + '</table>';
+  document.getElementById('r-manual').innerHTML = h + '</tbody></table>';
 }
 async function guardarManual(imp, uni, id) {
   const importe = numOrNull(`man-${imp}-${uni}`);
@@ -1687,7 +1689,7 @@ async function guardarManual(imp, uni, id) {
 // ── CATÁLOGO ─────────────────────────────────────────────────────────────────────────────────
 const REPARTO_TXT = c => ({ ventas: 'por venta de cada local', sueldo_banco: `${c.porcentaje ?? '?'} % del sueldo banco`, unidad_fija: 'todo a ' + uniNombre(c.unidad_fija), manual: 'a mano por unidad', no_va: 'no va a Gastos' }[c.prorrateo] || c.prorrateo);
 function renderCatalogo() {
-  let h = '<table><tr><th>Impuesto</th><th>Organismo</th><th>Frecuencia</th><th>Presenta</th><th>Planilla de Gastos</th><th>Activo</th><th></th></tr>';
+  let h = '<table><thead><tr><th>Impuesto</th><th>Organismo</th><th>Frecuencia</th><th>Presenta</th><th>Planilla de Gastos</th><th>Activo</th><th></th></tr></thead><tbody>';
   for (const c of CAT) {
     h += `<tr class="${c.activo ? '' : 'dim'}"><td><b>${esc(c.nombre)}</b>${c.formulario ? ` <span class="mini">${esc(c.formulario)}</span>` : ''}${c.notas ? `<div class="mini">${esc(c.notas)}</div>` : ''}</td>
       <td>${esc(ORG[c.organismo] || c.organismo)}</td><td>${esc(FREC[c.frecuencia] || c.frecuencia)}</td>
@@ -1695,7 +1697,7 @@ function renderCatalogo() {
       <td class="mini">${esc(REPARTO_TXT(c))}${c.categoria_gastos ? ' · ' + esc(c.categoria_gastos) : ''}</td>
       <td>${c.activo ? '✓' : '—'}</td><td>${ve('impuestos.catalogo') ? ib('editar', 'Editar', `formImpuesto('${c.clave}')`) : ''}</td></tr>`;
   }
-  document.getElementById('k-lista').innerHTML = h + '</table>';
+  document.getElementById('k-lista').innerHTML = h + '</tbody></table>';
   document.getElementById('k-nuevo').innerHTML = ve('impuestos.catalogo') ? ib('mas', 'Nuevo impuesto', "formImpuesto('')") : '';
 }
 function formImpuesto(clave) {
@@ -1743,7 +1745,7 @@ async function guardarImpuesto() {
 }
 
 </script>
-<script src="manual.js?v=14"></script>
-<script src="adorno-tablas.js?v=6761f5ad"></script>
+<script src="manual.js?v=15"></script>
+<script src="adorno-tablas.js?v=e33931fe"></script>
 </body>
 </html>
